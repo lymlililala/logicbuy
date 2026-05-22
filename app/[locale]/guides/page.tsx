@@ -1,10 +1,12 @@
 import { genPageMetadata } from '@/app/seo'
-import { fetchGuideList } from '@/lib/supabase'
+import { fetchGuideListPaged } from '@/lib/supabase'
 import { getTranslations } from 'next-intl/server'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import { formatDate } from 'pliny/utils/formatDate'
 import siteMetadata from '@/data/siteMetadata'
+
+const PER_PAGE = 10
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
@@ -12,19 +14,50 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return genPageMetadata({ title: t('guides') })
 }
 
-export default async function GuidesPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function GuidesPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ page?: string }>
+}) {
   const { locale } = await params
-  const guides = await fetchGuideList(locale)
+  const { page: pageParam } = await searchParams
+  const isZh = locale === 'zh'
 
-  const title = locale === 'zh' ? '全部避坑指南' : 'All Guides'
-  const subtitle =
-    locale === 'zh'
-      ? `共 ${guides.length} 篇，纯参数说话，不提品牌`
-      : `${guides.length} guides · facts & specs, no brand bias`
+  const currentPage = Math.max(1, parseInt(pageParam || '1', 10))
+  const { guides, total } = await fetchGuideListPaged(locale, currentPage, PER_PAGE)
+  const totalPages = Math.ceil(total / PER_PAGE)
+
+  const title = isZh ? '全部避坑指南' : 'All Guides'
+  const subtitle = isZh
+    ? `共 ${total} 篇，纯参数说话，不提品牌`
+    : `${total} guides · facts & specs, no brand bias`
+
+  /** 生成分页链接 */
+  const pageHref = (p: number) => `/${locale}/guides?page=${p}`
+
+  /** 生成显示的页码序列（当前页前后各 2 页，加首尾） */
+  function getPageNumbers(): (number | '...')[] {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    const pages: (number | '...')[] = [1]
+    if (currentPage > 4) pages.push('...')
+    for (
+      let i = Math.max(2, currentPage - 2);
+      i <= Math.min(totalPages - 1, currentPage + 2);
+      i++
+    ) {
+      pages.push(i)
+    }
+    if (currentPage < totalPages - 3) pages.push('...')
+    pages.push(totalPages)
+    return pages
+  }
 
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        {/* 标题区 */}
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
           <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
             {title}
@@ -32,6 +65,7 @@ export default async function GuidesPage({ params }: { params: Promise<{ locale:
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">{subtitle}</p>
         </div>
 
+        {/* 文章列表 */}
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {guides.map((guide) => {
             const { slug, title: gTitle, summary, tags, published_at, locale: gLocale } = guide
@@ -49,7 +83,7 @@ export default async function GuidesPage({ params }: { params: Promise<{ locale:
                         </time>
                         {isFallback && (
                           <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700 dark:bg-amber-900 dark:text-amber-300">
-                            {locale === 'zh' ? '仅中文' : 'ZH only'}
+                            {isZh ? '仅中文' : 'ZH only'}
                           </span>
                         )}
                       </dd>
@@ -85,7 +119,7 @@ export default async function GuidesPage({ params }: { params: Promise<{ locale:
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read more: "${gTitle}"`}
                         >
-                          {locale === 'zh' ? '查看完整指南 →' : 'Read guide →'}
+                          {isZh ? '查看完整指南 →' : 'Read guide →'}
                         </Link>
                       </div>
                     </div>
@@ -95,14 +129,86 @@ export default async function GuidesPage({ params }: { params: Promise<{ locale:
             )
           })}
         </ul>
+
+        {guides.length === 0 && (
+          <div className="py-20 text-center text-gray-500 dark:text-gray-400">
+            <p className="text-xl">
+              {isZh ? '暂无指南，请稍后查看。' : 'No guides yet. Check back soon.'}
+            </p>
+          </div>
+        )}
       </div>
 
-      {guides.length === 0 && (
-        <div className="py-20 text-center text-gray-500 dark:text-gray-400">
-          <p className="text-xl">
-            {locale === 'zh' ? '暂无指南，请稍后查看。' : 'No guides yet. Check back soon.'}
-          </p>
-        </div>
+      {/* 分页器 */}
+      {totalPages > 1 && (
+        <nav
+          aria-label="Pagination"
+          className="mt-10 flex items-center justify-center gap-1.5 pb-8"
+        >
+          {/* 上一页 */}
+          {currentPage > 1 ? (
+            <Link
+              href={pageHref(currentPage - 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-sm text-gray-600 transition hover:border-blue-500 hover:text-blue-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+              aria-label={isZh ? '上一页' : 'Previous page'}
+            >
+              ‹
+            </Link>
+          ) : (
+            <span className="flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-lg border border-gray-100 text-sm text-gray-300 dark:border-gray-800 dark:text-gray-600">
+              ‹
+            </span>
+          )}
+
+          {/* 页码 */}
+          {getPageNumbers().map((p, idx) =>
+            p === '...' ? (
+              <span
+                key={`ellipsis-${idx}`}
+                className="flex h-9 w-9 items-center justify-center text-sm text-gray-400"
+              >
+                …
+              </span>
+            ) : (
+              <Link
+                key={p}
+                href={pageHref(p)}
+                className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition ${
+                  p === currentPage
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400'
+                }`}
+                aria-current={p === currentPage ? 'page' : undefined}
+              >
+                {p}
+              </Link>
+            )
+          )}
+
+          {/* 下一页 */}
+          {currentPage < totalPages ? (
+            <Link
+              href={pageHref(currentPage + 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-sm text-gray-600 transition hover:border-blue-500 hover:text-blue-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+              aria-label={isZh ? '下一页' : 'Next page'}
+            >
+              ›
+            </Link>
+          ) : (
+            <span className="flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-lg border border-gray-100 text-sm text-gray-300 dark:border-gray-800 dark:text-gray-600">
+              ›
+            </span>
+          )}
+        </nav>
+      )}
+
+      {/* 当前页信息 */}
+      {totalPages > 1 && (
+        <p className="pb-4 text-center text-xs text-gray-400 dark:text-gray-600">
+          {isZh
+            ? `第 ${currentPage} / ${totalPages} 页，共 ${total} 篇`
+            : `Page ${currentPage} of ${totalPages} · ${total} guides total`}
+        </p>
       )}
     </>
   )
