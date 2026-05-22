@@ -11,7 +11,6 @@ export default function Footer({ locale }: FooterProps) {
   const navLinks = [
     { href: `/${locale}/guides`, label: isZh ? '全部指南' : 'All Guides' },
     { href: `/${locale}/tags`, label: isZh ? '分类' : 'Categories' },
-    { href: `/${locale}/about`, label: isZh ? '关于我们' : 'About' },
   ]
 
   return (
