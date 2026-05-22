@@ -52,11 +52,29 @@ export default async function TagsPage({ params }: { params: Promise<{ locale: s
     ],
   }
 
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: title,
+    url: `${siteMetadata.siteUrl}/${locale}/tags`,
+    numberOfItems: CATEGORIES.length,
+    itemListElement: CATEGORIES.map((cat, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: isZh ? cat.labelZh : cat.labelEn,
+      url: `${siteMetadata.siteUrl}/${locale}/tags/${cat.slug}`,
+    })),
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
       />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         {/* Header */}
