@@ -100,7 +100,21 @@ function SkeletonCard() {
   )
 }
 
-export default function MainLocale({ posts, locale }: { posts: PostSummary[]; locale: string }) {
+interface Stats {
+  totalGuides: number
+  totalCategories: number
+  totalSubcategories: number
+}
+
+export default function MainLocale({
+  posts,
+  locale,
+  stats,
+}: {
+  posts: PostSummary[]
+  locale: string
+  stats?: Stats
+}) {
   const t = useTranslations('home')
   const isZh = locale === 'zh'
   const [loaded] = useState(true)
@@ -176,9 +190,18 @@ export default function MainLocale({ posts, locale }: { posts: PostSummary[]; lo
             {/* 数据统计栏 */}
             <div className="mt-8 flex gap-6">
               {[
-                { num: '300+', label: isZh ? '深度指南' : 'In-depth Guides' },
-                { num: '8', label: isZh ? '大品类' : 'Categories' },
-                { num: '50+', label: isZh ? '子品类' : 'Subcategories' },
+                {
+                  num: stats ? `${stats.totalGuides}+` : '300+',
+                  label: isZh ? '深度指南' : 'In-depth Guides',
+                },
+                {
+                  num: stats ? String(stats.totalCategories) : '8',
+                  label: isZh ? '大品类' : 'Categories',
+                },
+                {
+                  num: stats ? `${stats.totalSubcategories}+` : '50+',
+                  label: isZh ? '子品类' : 'Subcategories',
+                },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="font-mono-spec text-xl font-bold text-blue-600 dark:text-blue-400">
