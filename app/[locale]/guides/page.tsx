@@ -11,7 +11,18 @@ const PER_PAGE = 10
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'nav' })
-  return genPageMetadata({ title: t('guides') })
+  const canonical = `${siteMetadata.siteUrl}/${locale}/guides`
+  return genPageMetadata({
+    title: t('guides'),
+    alternates: {
+      canonical,
+      languages: {
+        en: `${siteMetadata.siteUrl}/en/guides`,
+        zh: `${siteMetadata.siteUrl}/zh/guides`,
+        'x-default': `${siteMetadata.siteUrl}/en/guides`,
+      },
+    },
+  })
 }
 
 export default async function GuidesPage({
@@ -54,8 +65,31 @@ export default async function GuidesPage({
     return pages
   }
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: isZh ? '首页' : 'Home',
+        item: `${siteMetadata.siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: isZh ? '全部指南' : 'All Guides',
+        item: `${siteMetadata.siteUrl}/${locale}/guides`,
+      },
+    ],
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         {/* 标题区 */}
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">

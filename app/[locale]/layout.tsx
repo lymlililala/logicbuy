@@ -14,6 +14,8 @@ export async function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+const SOCIAL_BANNER = `${siteMetadata.siteUrl}/static/images/twitter-card.png`
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
@@ -24,14 +26,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteMetadata.title,
     description: siteMetadata.description,
-    url: './',
+    url: siteMetadata.siteUrl,
     siteName: siteMetadata.title,
-    images: [siteMetadata.socialBanner],
+    images: [{ url: SOCIAL_BANNER, width: 1200, height: 630, alt: siteMetadata.title }],
     locale: 'en_US',
     type: 'website',
   },
   alternates: {
-    canonical: './',
+    // canonical 由各页面的 generateMetadata 自行设置，此处只配置 RSS
     types: {
       'application/rss+xml': `${siteMetadata.siteUrl}/feed.xml`,
     },
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     title: siteMetadata.title,
     card: 'summary_large_image',
-    images: [siteMetadata.socialBanner],
+    images: [SOCIAL_BANNER],
   },
 }
 
