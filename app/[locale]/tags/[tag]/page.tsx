@@ -64,7 +64,13 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
   const guides = await fetchGuidesByTag(decodedTag, locale)
 
   // 如果是大类，同时获取各子类的文章数（用于子分类过滤器）
-  const tagCounts = isMainCategory ? await fetchTagCounts(locale) : {}
+  // 同时取 zh 数量，用于标记"仅有中文内容"的子分类
+  const [tagCounts, tagCountsZh] = isMainCategory
+    ? await Promise.all([
+        fetchTagCounts(locale),
+        locale !== 'zh' ? fetchTagCounts('zh') : Promise.resolve({}),
+      ])
+    : [{}, {}]
 
   const catLabel = activeCat ? (isZh ? activeCat.labelZh : activeCat.labelEn) : decodedTag
   const subLabel = !isMainCategory ? getSubcategoryLabel(decodedTag, locale) : ''
@@ -117,14 +123,22 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
             </Link>
             {mainCat.subcategories.map((sub) => {
               const subCount = tagCounts[sub.slug] || 0
+              const zhCount = (tagCountsZh as Record<string, number>)[sub.slug] || 0
+              // 当前语言无文章但中文有：标注 ZH
+              const zhOnly = !isZh && subCount === 0 && zhCount > 0
               return (
                 <Link
                   key={sub.slug}
                   href={`/${locale}/tags/${sub.slug}`}
-                  className="hover:border-primary-400 hover:text-primary-600 dark:hover:border-primary-500 dark:hover:text-primary-400 inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                  className="hover:border-primary-400 hover:text-primary-600 dark:hover:border-primary-500 dark:hover:text-primary-400 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                 >
                   {isZh ? sub.labelZh : sub.labelEn}
                   {subCount > 0 && <span className="text-xs text-gray-400">{subCount}</span>}
+                  {zhOnly && (
+                    <span className="rounded bg-amber-100 px-1 py-0.5 text-[10px] font-semibold text-amber-600 dark:bg-amber-900/40 dark:text-amber-400">
+                      ZH
+                    </span>
+                  )}
                 </Link>
               )
             })}
