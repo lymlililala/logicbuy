@@ -90,17 +90,6 @@ module.exports = () => {
       ],
       unoptimized,
     },
-    async redirects() {
-      return [
-        // 非 www → www 永久重定向，统一权重
-        {
-          source: '/:path*',
-          has: [{ type: 'host', value: 'logicbuy.guide' }],
-          destination: 'https://www.logicbuy.guide/:path*',
-          permanent: true,
-        },
-      ]
-    },
     async headers() {
       return [
         {
