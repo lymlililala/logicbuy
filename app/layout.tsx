@@ -5,6 +5,7 @@ import 'remark-github-blockquote-alert/alert.css'
 import { Space_Grotesk, Roboto_Mono } from 'next/font/google'
 import { ThemeProviders } from './theme-providers'
 import { getLocale } from 'next-intl/server'
+import { Analytics } from '@vercel/analytics/next'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-gray-50 pl-[calc(100vw-100%)] text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
         <ThemeProviders>{children}</ThemeProviders>
+        <Analytics />
       </body>
     </html>
   )
