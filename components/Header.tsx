@@ -46,11 +46,11 @@ export default function Header({ locale }: HeaderProps) {
         <div className="flex items-center gap-2">
           {/* Logo mark — 极客蓝 */}
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-black text-white shadow-sm">
-            P
+            L
           </div>
           <div className="flex flex-col leading-none">
             <span className="text-[15px] font-extrabold tracking-tight text-gray-900 dark:text-white">
-              PitfallFree
+              LogicBuy
             </span>
             <span className="hidden text-[9px] font-medium tracking-wide text-gray-400 sm:block dark:text-gray-600">
               {isZh ? 'BUY BY SPECS' : 'BUY BY SPECS'}

@@ -6,7 +6,7 @@ import Image from './Image'
 import CustomLink from './Link'
 import TableWrapper from './TableWrapper'
 
-// PitfallFree guide components
+// LogicBuy guide components
 import TLDRBox from './guide/TLDRBox'
 import RedFlags from './guide/RedFlags'
 import KeySpecsTable from './guide/KeySpecsTable'
@@ -22,7 +22,7 @@ export const components: MDXComponents = {
   pre: Pre,
   table: TableWrapper,
   BlogNewsletterForm,
-  // PitfallFree guide modules
+  // LogicBuy guide modules
   TLDRBox,
   RedFlags,
   KeySpecsTable,

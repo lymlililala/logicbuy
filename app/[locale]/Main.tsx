@@ -378,7 +378,7 @@ export default function MainLocale({ posts, locale }: { posts: PostSummary[]; lo
         <div className="mb-1 flex items-center gap-2">
           <span className="h-px flex-1 bg-gray-800" />
           <span className="text-[10px] font-bold tracking-[0.2em] text-gray-600 uppercase">
-            {isZh ? 'Why PitfallFree' : 'Why PitfallFree'}
+            {isZh ? 'Why LogicBuy' : 'Why LogicBuy'}
           </span>
           <span className="h-px flex-1 bg-gray-800" />
         </div>
