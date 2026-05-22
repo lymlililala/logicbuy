@@ -32,13 +32,13 @@ function toLabel(tag: string): string {
 }
 
 /**
- * 统计数字展示格式：
- * - 个位数（< 10）：直接显示，不加 +（如 8 → "8"）
- * - 其他：向下取整到最近的 10/100/1000，加 +（如 19→"10+", 302→"300+", 1500→"1000+"）
- * 但两位数步进太大体验差，改为：10-99 直接显示实际值 + "+"（如 19→"19+"）
+ * 统计数字展示格式（所有数字都加 +，向下取整）：
+ * - 个位数（< 10）：显示 0+
+ * - 两位数（10-99）：直接显示实际值 + "+"（如 19→"19+"）
+ * - 三位数及以上：向下取整到百位 + "+"（如 302→"300+"）
  */
 function roundedStat(n: number): string {
-  if (n < 10) return String(n)
+  if (n < 10) return '0+'
   if (n < 100) return `${n}+`
   // 100 以上：向下取整到百位
   const magnitude = Math.pow(10, Math.floor(Math.log10(n)))
@@ -209,7 +209,7 @@ export default function MainLocale({
                   label: isZh ? '深度指南' : 'In-depth Guides',
                 },
                 {
-                  num: stats ? roundedStat(stats.totalCategories) : '8',
+                  num: stats ? roundedStat(stats.totalCategories) : '0+',
                   label: isZh ? '大品类' : 'Categories',
                 },
                 {
