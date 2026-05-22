@@ -1,6 +1,5 @@
 import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
-import SocialIcon from '@/components/social-icons'
 
 interface FooterProps {
   locale: string
@@ -44,14 +43,6 @@ export default function Footer({ locale }: FooterProps) {
               {link.label}
             </Link>
           ))}
-        </div>
-
-        {/* 社交图标 */}
-        <div className="mb-5 flex justify-center space-x-3">
-          <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={4} />
-          <SocialIcon kind="github" href={siteMetadata.github} size={4} />
-          <SocialIcon kind="x" href={siteMetadata.x} size={4} />
-          <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={4} />
         </div>
 
         {/* 版权 + 联盟声明 */}
