@@ -1,0 +1,182 @@
+import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
+import { fetchGuideBySlug, fetchGuideList, checkGuideLocales } from '@/lib/supabase'
+import { markdownToHtml } from '@/lib/markdown'
+import siteMetadata from '@/data/siteMetadata'
+import Link from '@/components/Link'
+import Tag from '@/components/Tag'
+import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import { formatDate } from 'pliny/utils/formatDate'
+
+export async function generateStaticParams() {
+  // 取所有语言的文章，合并去重 slug，确保每个 slug × locale 都生成静态页
+  const [zhGuides, enGuides] = await Promise.all([fetchGuideList('zh'), fetchGuideList('en')])
+  const allSlugs = [...new Set([...zhGuides.map((g) => g.slug), ...enGuides.map((g) => g.slug)])]
+  const locales = ['en', 'zh']
+  return locales.flatMap((locale) => allSlugs.map((slug) => ({ locale, slug })))
+}
+
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string; slug: string }>
+}): Promise<Metadata> {
+  const { locale, slug } = await props.params
+  const guide = await fetchGuideBySlug(slug, locale)
+
+  if (!guide) {
+    return { title: 'Not Found' }
+  }
+
+  const canonical = `${siteMetadata.siteUrl}/${locale}/guides/${slug}`
+  const alternates: Record<string, string> = {
+    en: `${siteMetadata.siteUrl}/en/guides/${slug}`,
+    zh: `${siteMetadata.siteUrl}/zh/guides/${slug}`,
+  }
+
+  return {
+    title: guide.title,
+    description: guide.summary,
+    alternates: {
+      canonical,
+      languages: {
+        ...alternates,
+        'x-default': `${siteMetadata.siteUrl}/en/guides/${slug}`,
+      },
+    },
+    openGraph: {
+      title: guide.title,
+      description: guide.summary,
+      url: canonical,
+      siteName: siteMetadata.title,
+      locale: locale === 'zh' ? 'zh_CN' : 'en_US',
+      type: 'article',
+      publishedTime: guide.published_at,
+      modifiedTime: guide.lastmod || guide.published_at,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: guide.title,
+      description: guide.summary,
+    },
+  }
+}
+
+export default async function GuidePage(props: {
+  params: Promise<{ locale: string; slug: string }>
+}) {
+  const { locale, slug } = await props.params
+  const guide = await fetchGuideBySlug(slug, locale)
+
+  if (!guide) return notFound()
+
+  // 渲染 Markdown → HTML
+  const contentHtml = await markdownToHtml(guide.content)
+
+  // 检查是否有其他语言版本（用于语言切换提示）
+  const availableLocales = await checkGuideLocales(slug)
+  const isFallback = guide.locale !== locale
+  const otherLocale = locale === 'zh' ? 'en' : 'zh'
+  const hasOtherLocale = availableLocales.includes(otherLocale)
+
+  // JSON-LD 结构化数据
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: guide.title,
+    description: guide.summary,
+    datePublished: guide.published_at,
+    dateModified: guide.lastmod || guide.published_at,
+    inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+    url: `${siteMetadata.siteUrl}/${locale}/guides/${slug}`,
+    publisher: {
+      '@type': 'Organization',
+      name: siteMetadata.title,
+      url: siteMetadata.siteUrl,
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ScrollTopAndComment />
+      <article>
+        <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
+          {/* ── Header ── */}
+          <header className="pt-6 xl:pb-6">
+            <div className="space-y-4 text-center">
+              {/* Tags */}
+              {guide.tags && guide.tags.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {guide.tags.map((tag) => (
+                    <Tag key={tag} text={tag} />
+                  ))}
+                </div>
+              )}
+              {/* Title */}
+              <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14 dark:text-gray-100">
+                {guide.title}
+              </h1>
+              {/* Meta */}
+              <dl className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div>
+                  <dt className="sr-only">Published on</dt>
+                  <dd>
+                    <time dateTime={guide.published_at}>
+                      {formatDate(guide.published_at, siteMetadata.locale)}
+                    </time>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </header>
+
+          {/* ── Fallback notice ── */}
+          {isFallback && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+              {guide.locale === 'zh'
+                ? '⚠️ English version not available yet. Showing Chinese content.'
+                : '⚠️ 暂无中文版本，显示英文内容。'}
+            </div>
+          )}
+
+          {/* ── Language switcher ── */}
+          {hasOtherLocale && (
+            <div className="py-3 text-right text-sm">
+              <Link
+                href={`/${otherLocale}/guides/${slug}`}
+                className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              >
+                {otherLocale === 'zh' ? '切换到中文 →' : 'Switch to English →'}
+              </Link>
+            </div>
+          )}
+
+          {/* ── Content ── */}
+          <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
+            <div
+              className="prose dark:prose-invert max-w-none pt-10 pb-8"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
+          </div>
+
+          {/* ── Footer ── */}
+          <footer>
+            <div className="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base">
+              <div className="pt-4 xl:pt-8">
+                <Link
+                  href={`/${locale}/guides`}
+                  className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                  aria-label="Back to guides"
+                >
+                  ← {locale === 'zh' ? '返回全部指南' : 'Back to all guides'}
+                </Link>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </article>
+    </>
+  )
+}

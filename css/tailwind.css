@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/forms";
+@plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @source '../node_modules/pliny';
 @custom-variant dark (&:where(.dark, .dark *));
@@ -7,34 +7,86 @@
 /* Core theme configuration */
 @theme {
   /* Font families */
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  --font-sans:
+    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  /* Monospace — for specs, params, model numbers */
+  --font-mono:
+    var(--font-roboto-mono), 'Fira Code', 'Cascadia Code', ui-monospace, 'SFMono-Regular', Menlo,
+    Consolas, monospace;
 
-  /* Colors */
-  /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
-  --color-primary-50: oklch(0.971 0.014 343.198);
-  --color-primary-100: oklch(0.948 0.028 342.258);
-  --color-primary-200: oklch(0.899 0.061 343.231);
-  --color-primary-300: oklch(0.823 0.12 346.018);
-  --color-primary-400: oklch(0.718 0.202 349.761);
-  --color-primary-500: oklch(0.656 0.241 354.308);
-  --color-primary-600: oklch(0.592 0.249 0.584);
-  --color-primary-700: oklch(0.525 0.223 3.958);
-  --color-primary-800: oklch(0.459 0.187 3.815);
-  --color-primary-900: oklch(0.408 0.153 2.432);
-  --color-primary-950: oklch(0.284 0.109 3.907);
+  /* ─────────────────────────────────────────────────────
+     PRIMARY: Geek Blue #2563EB — 理性·信任·科技
+     ──────────────────────────────────────────────────── */
+  --color-primary-50: oklch(0.97 0.015 255);
+  --color-primary-100: oklch(0.935 0.037 255);
+  --color-primary-200: oklch(0.875 0.075 254);
+  --color-primary-300: oklch(0.798 0.128 252);
+  --color-primary-400: oklch(0.707 0.183 249);
+  --color-primary-500: oklch(0.623 0.214 248); /* #2563EB */
+  --color-primary-600: oklch(0.556 0.22 247);
+  --color-primary-700: oklch(0.488 0.206 246);
+  --color-primary-800: oklch(0.42 0.177 244);
+  --color-primary-900: oklch(0.361 0.145 243);
+  --color-primary-950: oklch(0.246 0.098 243);
 
-  --color-gray-50: oklch(0.985 0.002 247.839);
-  --color-gray-100: oklch(0.967 0.003 264.542);
-  --color-gray-200: oklch(0.928 0.006 264.531);
-  --color-gray-300: oklch(0.872 0.01 258.338);
-  --color-gray-400: oklch(0.707 0.022 261.325);
-  --color-gray-500: oklch(0.551 0.027 264.364);
-  --color-gray-600: oklch(0.446 0.03 256.802);
-  --color-gray-700: oklch(0.373 0.034 259.733);
-  --color-gray-800: oklch(0.278 0.033 256.848);
-  --color-gray-900: oklch(0.21 0.034 264.665);
-  --color-gray-950: oklch(0.13 0.028 261.692);
+  /* ─────────────────────────────────────────────────────
+     WARNING: 避坑橙 #F59E0B — 陷阱·溢价·注意
+     ──────────────────────────────────────────────────── */
+  --color-warn-50: oklch(0.987 0.022 95);
+  --color-warn-100: oklch(0.963 0.058 94);
+  --color-warn-200: oklch(0.924 0.112 92);
+  --color-warn-300: oklch(0.876 0.157 88);
+  --color-warn-400: oklch(0.832 0.183 84);
+  --color-warn-500: oklch(0.769 0.188 79); /* #F59E0B */
+  --color-warn-600: oklch(0.67 0.175 68);
+  --color-warn-700: oklch(0.565 0.153 57);
+  --color-warn-800: oklch(0.47 0.124 50);
+  --color-warn-900: oklch(0.394 0.1 45);
+  --color-warn-950: oklch(0.267 0.068 42);
+
+  /* ─────────────────────────────────────────────────────
+     DANGER: 警示红 #EF4444 — 高溢价·不推荐
+     ──────────────────────────────────────────────────── */
+  --color-danger-50: oklch(0.971 0.013 17);
+  --color-danger-100: oklch(0.936 0.032 17);
+  --color-danger-200: oklch(0.885 0.062 18);
+  --color-danger-300: oklch(0.808 0.114 19);
+  --color-danger-400: oklch(0.724 0.166 22);
+  --color-danger-500: oklch(0.637 0.237 25); /* #EF4444 */
+  --color-danger-600: oklch(0.577 0.245 27);
+  --color-danger-700: oklch(0.505 0.213 27);
+  --color-danger-800: oklch(0.444 0.177 26);
+  --color-danger-900: oklch(0.396 0.141 25);
+  --color-danger-950: oklch(0.258 0.092 26);
+
+  /* ─────────────────────────────────────────────────────
+     SUCCESS: 推荐绿 #10B981 — 推荐·硬核参数
+     ──────────────────────────────────────────────────── */
+  --color-success-50: oklch(0.98 0.021 166);
+  --color-success-100: oklch(0.95 0.052 162);
+  --color-success-200: oklch(0.9 0.1 162);
+  --color-success-300: oklch(0.837 0.149 160);
+  --color-success-400: oklch(0.765 0.177 158);
+  --color-success-500: oklch(0.696 0.17 162); /* #10B981 */
+  --color-success-600: oklch(0.596 0.145 163);
+  --color-success-700: oklch(0.508 0.118 165);
+  --color-success-800: oklch(0.432 0.092 166);
+  --color-success-900: oklch(0.375 0.072 165);
+  --color-success-950: oklch(0.266 0.05 165);
+
+  /* Gray — cold slate */
+  --color-gray-50: oklch(0.984 0.003 247); /* #F8FAFC 冷灰白 */
+  --color-gray-100: oklch(0.968 0.004 255);
+  --color-gray-200: oklch(0.929 0.007 255);
+  --color-gray-300: oklch(0.869 0.011 256);
+  --color-gray-400: oklch(0.704 0.022 261);
+  --color-gray-500: oklch(0.554 0.024 264);
+  --color-gray-600: oklch(0.446 0.025 257);
+  --color-gray-700: oklch(0.374 0.029 259);
+  --color-gray-800: oklch(0.279 0.028 257);
+  --color-gray-900: oklch(0.208 0.028 264); /* #1E293B */
+  --color-gray-950: oklch(0.129 0.022 261); /* #0F172A 深石板灰 */
 
   /* Line heights */
   --line-height-11: 2.75rem;
@@ -48,14 +100,6 @@
   --z-80: 80;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -79,6 +123,15 @@
 }
 
 @layer utilities {
+  /* ── Monospace 参数排版工具类 ── */
+  .font-mono-spec {
+    font-family: var(--font-mono);
+    font-feature-settings:
+      'tnum' on,
+      'lnum' on;
+    letter-spacing: -0.01em;
+  }
+
   .prose {
     & a {
       color: var(--color-primary-500);
@@ -97,15 +150,16 @@
       font-weight: 600;
     }
     & :where(code):not(pre code) {
-      color: var(--color-indigo-500);
+      color: var(--color-primary-500);
+      font-family: var(--font-mono);
     }
   }
 
   .prose-invert {
     & a {
-      color: var(--color-primary-500);
+      color: var(--color-primary-400);
       &:hover {
-        color: var(--color-primary-400);
+        color: var(--color-primary-300);
       }
       & code {
         color: var(--color-primary-400);
@@ -142,11 +196,10 @@
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* https://stackoverflow.com/questions/61083813/how-to-avoid-internal-autofill-selected-style-to-be-applied */
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
   transition:
@@ -172,4 +225,33 @@ input:-webkit-autofill:focus {
 .linkicon {
   display: inline-block;
   vertical-align: middle;
+}
+
+/* ── 骨架屏闪烁动画 ── */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-100) 25%,
+    var(--color-gray-200) 50%,
+    var(--color-gray-100) 75%
+  );
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-800) 25%,
+    var(--color-gray-700) 50%,
+    var(--color-gray-800) 75%
+  );
+  background-size: 800px 100%;
 }

@@ -16,9 +16,9 @@ const LayoutWrapper = ({ children }: Props) => {
   return (
     <SectionContainer>
       <div className={`${inter.className} flex h-screen flex-col justify-between font-sans`}>
-        <Header />
+        <Header locale="en" />
         <main className="mb-auto">{children}</main>
-        <Footer />
+        <Footer locale="en" />
       </div>
     </SectionContainer>
   )
