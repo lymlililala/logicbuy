@@ -164,9 +164,11 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
     return (data as Guide[]) || []
   }
 
-  // 只返回目标语言的文章，不做 fallback
-  // （fallback 会导致英文分类页显示中文文章，视觉上像切换了语言）
-  return tryLocale(locale)
+  const result = await tryLocale(locale)
+  if (result.length > 0) return result
+  // 当前语言无文章时，fallback 到中文（会打 ZH only 标签告知用户）
+  if (locale !== 'zh') return tryLocale('zh')
+  return []
 }
 
 /**
