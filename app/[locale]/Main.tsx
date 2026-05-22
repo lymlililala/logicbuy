@@ -209,11 +209,11 @@ export default function MainLocale({
                   label: isZh ? '深度指南' : 'In-depth Guides',
                 },
                 {
-                  num: stats ? roundedStat(stats.totalCategories) : '0+',
+                  num: stats ? `${stats.totalCategories}+` : '8+',
                   label: isZh ? '大品类' : 'Categories',
                 },
                 {
-                  num: stats ? roundedStat(stats.totalSubcategories) : '50+',
+                  num: stats ? `${stats.totalSubcategories}+` : '76+',
                   label: isZh ? '子品类' : 'Subcategories',
                 },
               ].map((stat) => (
