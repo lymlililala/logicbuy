@@ -34,10 +34,7 @@ export default function Header({ locale }: HeaderProps) {
     .filter(Boolean)
     .join(' ')
 
-  const plainLinks = [
-    { href: `/${locale}/guides`, title: isZh ? '指南' : 'Guides' },
-    { href: `/${locale}/about`, title: isZh ? '关于' : 'About' },
-  ]
+  const plainLinks = [{ href: `/${locale}/guides`, title: isZh ? '指南' : 'Guides' }]
 
   return (
     <header className={headerClass}>

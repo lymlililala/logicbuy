@@ -21,7 +21,6 @@ const MobileNav = ({ locale }: MobileNavProps) => {
     { href: `/${locale}`, title: isZh ? '首页' : 'Home' },
     { href: `/${locale}/guides`, title: isZh ? '避坑指南' : 'Guides' },
     { href: `/${locale}/tags`, title: isZh ? '分类' : 'Categories' },
-    { href: `/${locale}/about`, title: isZh ? '关于' : 'About' },
   ]
 
   const onToggleNav = () => {
