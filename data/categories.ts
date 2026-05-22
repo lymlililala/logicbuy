@@ -30,8 +30,20 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-blue-100 dark:bg-blue-900/40',
     subcategories: [
       { slug: 'computers-peripherals', labelZh: '电脑与外设', labelEn: 'Computers & Peripherals' },
-      { slug: 'home-audio-video', labelZh: '家庭影音', labelEn: 'Home Audio/Video' },
+      { slug: 'monitors', labelZh: '显示器', labelEn: 'Monitors' },
+      { slug: 'laptops', labelZh: '笔记本电脑', labelEn: 'Laptops' },
+      { slug: 'mechanical-keyboards', labelZh: '机械键盘', labelEn: 'Mechanical Keyboards' },
+      { slug: 'home-audio-video', labelZh: '家庭影音', labelEn: 'Home Audio & Video' },
+      { slug: 'televisions', labelZh: '电视', labelEn: 'Televisions' },
+      { slug: 'projectors', labelZh: '投影仪', labelEn: 'Projectors' },
+      { slug: 'audio-systems', labelZh: '音响系统', labelEn: 'Audio Systems' },
+      { slug: 'anc-headphones', labelZh: '降噪耳机', labelEn: 'ANC Headphones' },
       { slug: 'mobile-wearables', labelZh: '移动与穿戴', labelEn: 'Mobile & Wearables' },
+      { slug: 'smartphones', labelZh: '智能手机', labelEn: 'Smartphones' },
+      { slug: 'smartwatches', labelZh: '智能手表', labelEn: 'Smartwatches' },
+      { slug: 'tablets', labelZh: '平板电脑', labelEn: 'Tablets' },
+      { slug: 'cameras', labelZh: '相机', labelEn: 'Cameras' },
+      { slug: 'gaming', labelZh: '游戏外设', labelEn: 'Gaming' },
     ],
   },
   {
@@ -46,8 +58,25 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-amber-100 dark:bg-amber-900/40',
     subcategories: [
       { slug: 'cleaning-appliances', labelZh: '清洁电器', labelEn: 'Cleaning Appliances' },
+      { slug: 'robot-vacuums', labelZh: '扫地机器人', labelEn: 'Robot Vacuums' },
+      { slug: 'air-purifiers', labelZh: '空气净化器', labelEn: 'Air Purifiers' },
+      {
+        slug: 'dehumidifiers-humidifiers',
+        labelZh: '除湿/加湿器',
+        labelEn: 'Dehumidifiers & Humidifiers',
+      },
       { slug: 'kitchen-appliances', labelZh: '厨房电器', labelEn: 'Kitchen Appliances' },
+      { slug: 'refrigerators', labelZh: '冰箱', labelEn: 'Refrigerators' },
+      { slug: 'dishwashers', labelZh: '洗碗机', labelEn: 'Dishwashers' },
+      { slug: 'coffee-makers', labelZh: '咖啡机', labelEn: 'Coffee Makers' },
       { slug: 'climate-control', labelZh: '环境电器', labelEn: 'Climate Control' },
+      { slug: 'air-conditioners', labelZh: '空调', labelEn: 'Air Conditioners' },
+      { slug: 'fresh-air-systems', labelZh: '新风系统', labelEn: 'Fresh Air Systems' },
+      { slug: 'water-purifiers', labelZh: '净水器', labelEn: 'Water Purifiers' },
+      { slug: 'personal-care-devices', labelZh: '个护仪器', labelEn: 'Personal Care Devices' },
+      { slug: 'hair-dryers', labelZh: '吹风机', labelEn: 'Hair Dryers' },
+      { slug: 'oral-care', labelZh: '口腔护理', labelEn: 'Oral Care' },
+      { slug: 'beauty-devices', labelZh: '美容仪器', labelEn: 'Beauty Devices' },
     ],
   },
   {
@@ -62,8 +91,16 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-yellow-100 dark:bg-yellow-900/40',
     subcategories: [
       { slug: 'furniture', labelZh: '核心家具', labelEn: 'Furniture' },
+      { slug: 'sofas', labelZh: '沙发', labelEn: 'Sofas' },
+      { slug: 'mattresses', labelZh: '床垫', labelEn: 'Mattresses' },
+      { slug: 'ergonomic-chairs', labelZh: '人体工学椅', labelEn: 'Ergonomic Chairs' },
       { slug: 'building-materials', labelZh: '硬装建材', labelEn: 'Building Materials' },
+      { slug: 'flooring', labelZh: '地板', labelEn: 'Flooring' },
+      { slug: 'windows-doors', labelZh: '门窗', labelEn: 'Windows & Doors' },
+      { slug: 'paints-adhesives', labelZh: '涂料与胶水', labelEn: 'Paints & Adhesives' },
       { slug: 'bath-hardware', labelZh: '卫浴五金', labelEn: 'Bath & Hardware' },
+      { slug: 'showerheads', labelZh: '花洒', labelEn: 'Showerheads' },
+      { slug: 'smart-toilets', labelZh: '智能马桶', labelEn: 'Smart Toilets' },
     ],
   },
   {
@@ -78,7 +115,12 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-pink-100 dark:bg-pink-900/40',
     subcategories: [
       { slug: 'skincare-science', labelZh: '护肤成分学', labelEn: 'Skincare Science' },
-      { slug: 'personal-care-devices', labelZh: '个护仪器', labelEn: 'Care Devices' },
+      { slug: 'sunscreen', labelZh: '防晒', labelEn: 'Sunscreen' },
+      { slug: 'anti-aging', labelZh: '抗衰老', labelEn: 'Anti-Aging' },
+      { slug: 'retinol', labelZh: '维A酸/视黄醇', labelEn: 'Retinol' },
+      { slug: 'brightening', labelZh: '美白提亮', labelEn: 'Brightening' },
+      { slug: 'peptides', labelZh: '多肽成分', labelEn: 'Peptides' },
+      { slug: 'protein-ingredients', labelZh: '蛋白质成分', labelEn: 'Protein Ingredients' },
     ],
   },
   {
@@ -93,7 +135,12 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-green-100 dark:bg-green-900/40',
     subcategories: [
       { slug: 'pet-diet', labelZh: '宠物食品', labelEn: 'Pet Diet' },
+      { slug: 'cat-food', labelZh: '猫粮', labelEn: 'Cat Food' },
+      { slug: 'dog-food', labelZh: '狗粮', labelEn: 'Dog Food' },
+      { slug: 'treats-freeze-dried', labelZh: '零食冻干', labelEn: 'Treats & Freeze-Dried' },
       { slug: 'pet-supplies', labelZh: '宠物用品', labelEn: 'Pet Supplies' },
+      { slug: 'cat-litter', labelZh: '猫砂', labelEn: 'Cat Litter' },
+      { slug: 'smart-litter-boxes', labelZh: '智能猫厕所', labelEn: 'Smart Litter Boxes' },
     ],
   },
   {
@@ -108,7 +155,12 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-purple-100 dark:bg-purple-900/40',
     subcategories: [
       { slug: 'travel-gear', labelZh: '出行装备', labelEn: 'Travel Gear' },
+      { slug: 'strollers', labelZh: '婴儿推车', labelEn: 'Strollers' },
+      { slug: 'car-seats', labelZh: '安全座椅', labelEn: 'Car Seats' },
       { slug: 'feeding-sleeping', labelZh: '喂养与睡眠', labelEn: 'Feeding & Sleeping' },
+      { slug: 'baby-bottles', labelZh: '奶瓶', labelEn: 'Baby Bottles' },
+      { slug: 'baby-mattresses', labelZh: '婴儿床垫', labelEn: 'Baby Mattresses' },
+      { slug: 'feeding-tools', labelZh: '辅食工具', labelEn: 'Feeding Tools' },
     ],
   },
   {
@@ -123,7 +175,13 @@ export const CATEGORIES: Category[] = [
     iconBg: 'bg-teal-100 dark:bg-teal-900/40',
     subcategories: [
       { slug: 'outdoor-gear', labelZh: '户外装备', labelEn: 'Outdoor Gear' },
+      { slug: 'hardshell-jackets', labelZh: '冲锋衣', labelEn: 'Hardshell Jackets' },
+      { slug: 'tents-sleeping-bags', labelZh: '帐篷与睡袋', labelEn: 'Tents & Sleeping Bags' },
+      { slug: 'backpacks-luggage', labelZh: '背包与行李箱', labelEn: 'Backpacks & Luggage' },
       { slug: 'home-gym', labelZh: '居家健身', labelEn: 'Home Gym' },
+      { slug: 'treadmills', labelZh: '跑步机', labelEn: 'Treadmills' },
+      { slug: 'gym-equipment', labelZh: '健身器材', labelEn: 'Gym Equipment' },
+      { slug: 'yoga-mats', labelZh: '瑜伽垫', labelEn: 'Yoga Mats' },
     ],
   },
   {
@@ -139,6 +197,9 @@ export const CATEGORIES: Category[] = [
     subcategories: [
       { slug: 'renting', labelZh: '租房与看房', labelEn: 'Renting' },
       { slug: 'used-goods', labelZh: '二手交易', labelEn: 'Used Goods' },
+      { slug: 'used-car', labelZh: '二手车', labelEn: 'Used Cars' },
+      { slug: 'secondhand-trading', labelZh: '闲置交易', labelEn: 'Secondhand Trading' },
+      { slug: 'inspection-checklist', labelZh: '验收清单', labelEn: 'Inspection Checklist' },
     ],
   },
 ]

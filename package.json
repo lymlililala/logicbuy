@@ -58,6 +58,7 @@
     "@types/react": "^19.2.13",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
+    "@vitalets/google-translate-api": "^9.2.1",
     "cross-env": "^10.1.0",
     "eslint": "^9.18.0",
     "eslint-config-next": "15.5.12",
@@ -74,10 +75,10 @@
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
-      "yarn eslint --fix"
+      "npx eslint --fix"
     ],
     "*.+(js|jsx|ts|tsx|json|css|md|mdx)": [
-      "yarn prettier --write"
+      "npx prettier --write"
     ]
   },
   "packageManager": "yarn@3.6.1"

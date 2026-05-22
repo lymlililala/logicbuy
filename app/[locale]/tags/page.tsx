@@ -18,8 +18,8 @@ export default async function TagsPage({ params }: { params: Promise<{ locale: s
 
   const title = isZh ? '全部品类' : 'All Categories'
   const subtitle = isZh
-    ? '8 大核心品类 · 70+ 细分方向 · 纯参数说话'
-    : '8 core categories · 70+ subcategories · facts & specs only'
+    ? '8 大核心品类 · 75+ 细分方向 · 纯参数说话'
+    : '8 core categories · 75+ subcategories · facts & specs only'
 
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
