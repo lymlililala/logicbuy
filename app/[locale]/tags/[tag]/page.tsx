@@ -43,9 +43,18 @@ export async function generateMetadata(props: {
 
   const title = parentLabel ? `${parentLabel} · ${label}` : label
 
+  const canonical = `${siteMetadata.siteUrl}/${locale}/tags/${decodedTag}`
   return genPageMetadata({
     title,
     description: `${siteMetadata.title} — ${title}`,
+    alternates: {
+      canonical,
+      languages: {
+        en: `${siteMetadata.siteUrl}/en/tags/${decodedTag}`,
+        zh: `${siteMetadata.siteUrl}/zh/tags/${decodedTag}`,
+        'x-default': `${siteMetadata.siteUrl}/en/tags/${decodedTag}`,
+      },
+    },
   })
 }
 

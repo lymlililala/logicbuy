@@ -9,7 +9,10 @@ interface PageSEOProps {
   [key: string]: any
 }
 
+const SOCIAL_BANNER = `${siteMetadata.siteUrl}/static/images/twitter-card.png`
+
 export function genPageMetadata({ title, description, image, ...rest }: PageSEOProps): Metadata {
+  const ogImage = image || SOCIAL_BANNER
   return {
     title,
     description: description || siteMetadata.description,
@@ -18,14 +21,14 @@ export function genPageMetadata({ title, description, image, ...rest }: PageSEOP
       description: description || siteMetadata.description,
       url: './',
       siteName: siteMetadata.title,
-      images: image ? [image] : [siteMetadata.socialBanner],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
       locale: 'en_US',
       type: 'website',
     },
     twitter: {
       title: `${title} | ${siteMetadata.title}`,
       card: 'summary_large_image',
-      images: image ? [image] : [siteMetadata.socialBanner],
+      images: [ogImage],
     },
     ...rest,
   }
