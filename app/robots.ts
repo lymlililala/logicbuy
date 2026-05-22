@@ -8,30 +8,44 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // 主流搜索引擎 — 完整抓取权限
+      // ── 主流搜索引擎：完整抓取权限，只屏蔽技术内部路径 ──
       {
         userAgent: ['Googlebot', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider'],
         allow: '/',
-        disallow: ['/api/', '/_next/', '/static/'],
+        disallow: ['/api/', '/_next/'],
       },
-      // 主流 AI 训练爬虫 — 只允许读内容页，禁止 API 和后台
+
+      // ── AI 训练爬虫：允许内容页，屏蔽 API ──
+      // allow 必须明确覆盖所有公开内容路径（含和不含尾斜杠两种形式）
       {
         userAgent: [
-          'GPTBot', // OpenAI
-          'ChatGPT-User', // ChatGPT browse
-          'ClaudeBot', // Anthropic
+          'GPTBot',
+          'ChatGPT-User',
+          'ClaudeBot',
           'Claude-Web',
           'anthropic-ai',
-          'PerplexityBot', // Perplexity
-          'cohere-ai', // Cohere
-          'Google-Extended', // Google AI training
-          'Amazonbot', // Amazon Alexa AI
-          'meta-externalagent', // Meta AI
+          'PerplexityBot',
+          'cohere-ai',
+          'Google-Extended',
+          'Amazonbot',
+          'meta-externalagent',
         ],
-        allow: ['/en/guides/', '/zh/guides/', '/en/tags/', '/zh/tags/'],
-        disallow: ['/api/', '/_next/', '/static/', '/en/about/', '/zh/about/'],
+        allow: [
+          '/en/',
+          '/zh/',
+          '/en/guides',
+          '/zh/guides',
+          '/en/guides/',
+          '/zh/guides/',
+          '/en/tags',
+          '/zh/tags',
+          '/en/tags/',
+          '/zh/tags/',
+        ],
+        disallow: ['/api/', '/_next/'],
       },
-      // 恶意/无价值爬虫 — 全部屏蔽
+
+      // ── SEO 监控工具爬虫：全部屏蔽，防止竞品分析 ──
       {
         userAgent: [
           'AhrefsBot',
@@ -45,17 +59,15 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: '/',
       },
-      // 其余所有 — 允许公开内容，禁止内部路由
+
+      // ── 其余所有爬虫：允许公开页面 ──
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/_next/', '/static/'],
+        disallow: ['/api/', '/_next/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
-    // LLM-friendly discovery (llms.txt convention — https://llmstxt.org)
-    // AI crawlers that respect this: GPTBot, ClaudeBot, PerplexityBot
-    // Location: ${siteUrl}/llms.txt
   }
 }
