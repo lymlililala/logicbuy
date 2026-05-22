@@ -16,7 +16,6 @@ function staticRoutes(): MetadataRoute.Sitemap {
     '', // 首页
     'guides', // 指南列表
     'tags', // 分类总览
-    'about', // 关于
   ]
 
   const entries: MetadataRoute.Sitemap = []
