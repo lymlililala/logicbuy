@@ -31,9 +31,16 @@ function toLabel(tag: string): string {
   return tag.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-/** 将数字向下取整到最高位，返回 "N+" 格式，个位数直接返回字符串 */
+/**
+ * 统计数字展示格式：
+ * - 个位数（< 10）：直接显示，不加 +（如 8 → "8"）
+ * - 其他：向下取整到最近的 10/100/1000，加 +（如 19→"10+", 302→"300+", 1500→"1000+"）
+ * 但两位数步进太大体验差，改为：10-99 直接显示实际值 + "+"（如 19→"19+"）
+ */
 function roundedStat(n: number): string {
   if (n < 10) return String(n)
+  if (n < 100) return `${n}+`
+  // 100 以上：向下取整到百位
   const magnitude = Math.pow(10, Math.floor(Math.log10(n)))
   return `${Math.floor(n / magnitude) * magnitude}+`
 }
