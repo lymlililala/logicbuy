@@ -10,7 +10,7 @@
     "hero_title_1": "Buy by",
     "hero_title_highlight": "Specs",
     "hero_title_2": ", Not by Brands",
-    "hero_desc": "The world's first <strong>parameter-driven</strong>, <strong>brand-bias-free</strong> consumer knowledge base. We decode specs so you never fall into marketing traps again.",
+    "hero_desc": "The world's first <strong>parameter-driven</strong>, <strong>brand-bias-free</strong> consumer guide. We decode specs so you never fall into marketing traps again.",
     "search_placeholder": "Search: Mattress, Robot Vacuum, Cat Food, Monitor...",
     "search_button": "Search",
     "search_note": "No brand sponsors. 100% parameter-driven.",
@@ -44,7 +44,7 @@
     "tags": "Tags",
     "prev_guide": "Previous Guide",
     "next_guide": "Next Guide",
-    "disclaimer": "This guide is for informational purposes only. We do not endorse any specific brand or product. Always verify specs with the manufacturer."
+    "disclaimer": "This guide is for informational purposes only. LogicBuy does not endorse any specific brand or product. Always verify specs with the manufacturer."
   },
   "lang_switch": {
     "label": "EN",
@@ -52,6 +52,6 @@
   },
   "footer": {
     "tagline": "Buy by Specs, Not by Brands",
-    "disclaimer": "No brand sponsorships. No affiliate bias. Pure knowledge."
+    "disclaimer": "No brand sponsorships. No affiliate bias. Pure spec knowledge."
   }
 }
