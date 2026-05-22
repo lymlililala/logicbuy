@@ -164,10 +164,9 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
     return (data as Guide[]) || []
   }
 
-  const result = await tryLocale(locale)
-  if (result.length > 0) return result
-  if (locale !== 'zh') return tryLocale('zh')
-  return []
+  // 只返回目标语言的文章，不做 fallback
+  // （fallback 会导致英文分类页显示中文文章，视觉上像切换了语言）
+  return tryLocale(locale)
 }
 
 /**

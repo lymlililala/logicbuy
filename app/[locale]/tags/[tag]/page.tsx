@@ -64,7 +64,7 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
   const guides = await fetchGuidesByTag(decodedTag, locale)
 
   // 如果是大类，同时获取各子类的文章数（用于子分类过滤器）
-  const tagCounts = isMainCategory ? await fetchTagCounts(locale === 'en' ? 'zh' : locale) : {}
+  const tagCounts = isMainCategory ? await fetchTagCounts(locale) : {}
 
   const catLabel = activeCat ? (isZh ? activeCat.labelZh : activeCat.labelEn) : decodedTag
   const subLabel = !isMainCategory ? getSubcategoryLabel(decodedTag, locale) : ''
@@ -117,7 +117,6 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
             </Link>
             {mainCat.subcategories.map((sub) => {
               const subCount = tagCounts[sub.slug] || 0
-              if (subCount === 0) return null
               return (
                 <Link
                   key={sub.slug}
@@ -125,7 +124,7 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
                   className="hover:border-primary-400 hover:text-primary-600 dark:hover:border-primary-500 dark:hover:text-primary-400 inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                 >
                   {isZh ? sub.labelZh : sub.labelEn}
-                  <span className="text-xs text-gray-400">{subCount}</span>
+                  {subCount > 0 && <span className="text-xs text-gray-400">{subCount}</span>}
                 </Link>
               )
             })}
