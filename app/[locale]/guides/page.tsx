@@ -84,12 +84,35 @@ export default async function GuidesPage({
     ],
   }
 
+  const itemListLd =
+    guides.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: isZh ? '全部指南' : 'All Guides',
+          url: `${siteMetadata.siteUrl}/${locale}/guides`,
+          numberOfItems: total,
+          itemListElement: guides.map((g, i) => ({
+            '@type': 'ListItem',
+            position: (currentPage - 1) * PER_PAGE + i + 1,
+            url: `${siteMetadata.siteUrl}/${locale}/guides/${g.slug}`,
+            name: g.title,
+          })),
+        }
+      : null
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
+      {itemListLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+        />
+      )}
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         {/* 标题区 */}
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
