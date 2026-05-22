@@ -9,7 +9,9 @@
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:create-table": "node scripts/create-pitfallfree-table.mjs",
+    "db:seed": "node scripts/seed-pitfallfree-guides.mjs"
   },
   "dependencies": {
     "@headlessui/react": "2.2.9",
@@ -21,11 +23,11 @@
     "contentlayer2": "0.5.8",
     "esbuild": "0.27.3",
     "github-slugger": "^2.0.0",
-    "gray-matter": "^4.0.3",
     "hast-util-from-html-isomorphic": "^2.0.0",
     "image-size": "2.0.2",
     "next": "15.5.12",
     "next-contentlayer2": "0.5.8",
+    "next-intl": "^4.12.0",
     "next-themes": "^0.4.6",
     "pliny": "0.4.1",
     "postcss": "^8.5.6",
@@ -49,6 +51,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.18.0",
+    "@supabase/supabase-js": "^2.106.1",
     "@svgr/webpack": "^8.1.0",
     "@types/mdx": "^2.0.13",
     "@types/react": "^19.2.13",
@@ -60,8 +63,10 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.3.0",
+    "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "pg": "^8.21.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3"

@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "home": "首页",
+    "guides": "避坑指南",
+    "categories": "分类",
+    "about": "关于"
+  },
+  "home": {
+    "badge": "聪明决策，零废话 ✦",
+    "hero_title_1": "靠",
+    "hero_title_highlight": "参数",
+    "hero_title_2": "选购，而非品牌",
+    "hero_desc": "全球首个<strong>参数驱动</strong>、<strong>无品牌偏见</strong>的消费知识库。我们解读规格参数，让你再也不会掉入营销陷阱。",
+    "search_placeholder": "搜索：床垫、扫地机器人、猫粮、显示器……",
+    "search_button": "搜索",
+    "search_note": "无品牌赞助。100% 参数驱动。",
+    "categories_title": "🗂 浏览分类",
+    "guides_title": "📖 最新避坑指南",
+    "guides_view_all": "查看全部指南 →",
+    "guides_empty": "暂无已发布的指南，敬请期待！",
+    "read_guide": "阅读指南 →",
+    "diff_title": "我们的与众不同",
+    "diff_desc": "其他评测网站都收品牌赞助费，我们不收。",
+    "diff_no_brand": "不提品牌名称",
+    "diff_no_brand_desc": "我们只讲参数规格，不提产品名称。",
+    "diff_param": "参数驱动",
+    "diff_param_desc": "每一条建议均以可量化的规格参数为依据。",
+    "diff_checklist": "互动购买清单",
+    "diff_checklist_desc": "在实体店或网购时使用我们的清单。"
+  },
+  "categories": {
+    "home_living": "家居生活",
+    "home_living_desc": "床垫、家具、家电",
+    "tech_specs": "数码科技",
+    "tech_specs_desc": "显示器、笔记本、手机、耳机",
+    "skincare": "护肤科学",
+    "skincare_desc": "成分、防晒、护肤程序解析",
+    "pet": "宠物营养",
+    "pet_desc": "猫粮、狗粮、兽医背书的参数"
+  },
+  "guide": {
+    "reading_time": "分钟阅读",
+    "published": "发布于",
+    "tags": "标签",
+    "prev_guide": "上一篇",
+    "next_guide": "下一篇",
+    "disclaimer": "本指南仅供参考。我们不为任何品牌或产品背书。请向制造商核实具体规格参数。"
+  },
+  "lang_switch": {
+    "label": "中文",
+    "switch_to": "EN"
+  },
+  "footer": {
+    "tagline": "靠参数选购，而非品牌",
+    "disclaimer": "无品牌赞助。无返佣偏见。纯粹知识。"
+  }
+}

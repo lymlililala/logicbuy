@@ -46,7 +46,21 @@ const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
   slug: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
+    // blog/en/how-to-choose-mattress → how-to-choose-mattress
+    // blog/how-to-choose-mattress  → how-to-choose-mattress (legacy)
+    resolve: (doc) => {
+      const flat = doc._raw.flattenedPath
+      // Remove leading "blog/en/" or "blog/zh/" or just "blog/"
+      return flat.replace(/^blog\/(en|zh)\//, '').replace(/^blog\//, '')
+    },
+  },
+  // Derived locale from file path (en | zh), defaults to 'en'
+  locale: {
+    type: 'string',
+    resolve: (doc) => {
+      const match = doc._raw.flattenedPath.match(/^blog\/(en|zh)\//)
+      return match ? match[1] : 'en'
+    },
   },
   path: {
     type: 'string',
@@ -95,6 +109,7 @@ function createSearchIndex(allBlogs) {
 
 export const Blog = defineDocumentType(() => ({
   name: 'Blog',
+  // Match both legacy blog/*.mdx and new locale-specific blog/en/*.mdx, blog/zh/*.mdx
   filePathPattern: 'blog/**/*.mdx',
   contentType: 'mdx',
   fields: {
@@ -109,6 +124,8 @@ export const Blog = defineDocumentType(() => ({
     layout: { type: 'string' },
     bibliography: { type: 'string' },
     canonicalUrl: { type: 'string' },
+    // Optional: override locale in frontmatter (e.g. locale: zh)
+    locale: { type: 'string' },
   },
   computedFields: {
     ...computedFields,

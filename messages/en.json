@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "home": "Home",
+    "guides": "Guides",
+    "categories": "Categories",
+    "about": "About"
+  },
+  "home": {
+    "badge": "Smart Decisions, Zero BS. ✦",
+    "hero_title_1": "Buy by",
+    "hero_title_highlight": "Specs",
+    "hero_title_2": ", Not by Brands",
+    "hero_desc": "The world's first <strong>parameter-driven</strong>, <strong>brand-bias-free</strong> consumer knowledge base. We decode specs so you never fall into marketing traps again.",
+    "search_placeholder": "Search: Mattress, Robot Vacuum, Cat Food, Monitor...",
+    "search_button": "Search",
+    "search_note": "No brand sponsors. 100% parameter-driven.",
+    "categories_title": "🗂 Browse Categories",
+    "guides_title": "📖 Latest Buying Guides",
+    "guides_view_all": "View all guides →",
+    "guides_empty": "No guides published yet. Check back soon!",
+    "read_guide": "Read guide →",
+    "diff_title": "How We're Different",
+    "diff_desc": "Every other review site gets paid by brands. We don't.",
+    "diff_no_brand": "No Brand Mentions",
+    "diff_no_brand_desc": "We talk specs, not product names.",
+    "diff_param": "Parameter-Driven",
+    "diff_param_desc": "Every recommendation is backed by measurable specs.",
+    "diff_checklist": "Interactive Checklists",
+    "diff_checklist_desc": "Use our checklists in-store or while shopping online."
+  },
+  "categories": {
+    "home_living": "Home & Living",
+    "home_living_desc": "Mattresses, furniture, appliances",
+    "tech_specs": "Tech Specs",
+    "tech_specs_desc": "Monitors, laptops, phones, headphones",
+    "skincare": "Skincare Science",
+    "skincare_desc": "Ingredients, SPF, routines decoded",
+    "pet": "Pet Nutrition",
+    "pet_desc": "Cat food, dog food, vet-backed specs"
+  },
+  "guide": {
+    "reading_time": "min read",
+    "published": "Published",
+    "tags": "Tags",
+    "prev_guide": "Previous Guide",
+    "next_guide": "Next Guide",
+    "disclaimer": "This guide is for informational purposes only. We do not endorse any specific brand or product. Always verify specs with the manufacturer."
+  },
+  "lang_switch": {
+    "label": "EN",
+    "switch_to": "中文"
+  },
+  "footer": {
+    "tagline": "Buy by Specs, Not by Brands",
+    "disclaimer": "No brand sponsorships. No affiliate bias. Pure knowledge."
+  }
+}
