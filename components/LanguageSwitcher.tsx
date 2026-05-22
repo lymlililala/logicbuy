@@ -15,9 +15,12 @@ export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProp
   const targetLocale = currentLocale === 'en' ? 'zh' : 'en'
 
   const handleSwitch = () => {
-    // 将当前 URL 路径中的 /en/ 或 /zh/ 替换为目标 locale
-    // 路径格式: /en/blog/xxx → /zh/blog/xxx
-    const newPath = pathname.replace(new RegExp(`^/(en|zh)(/|$)`), `/${targetLocale}$2`)
+    // 写入 NEXT_LOCALE Cookie，next-intl middleware 会在下次请求时读取它
+    // 有效期 1 年，SameSite=Lax 兼容主流浏览器
+    document.cookie = `NEXT_LOCALE=${targetLocale}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
+
+    // 替换 URL 中的 locale 前缀
+    const newPath = pathname.replace(/^\/(en|zh)(\/|$)/, `/${targetLocale}$2`)
     router.push(newPath)
   }
 
