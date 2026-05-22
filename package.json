@@ -74,7 +74,7 @@
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
-      "npx eslint --fix"
+      "node_modules/.bin/eslint --fix --format json"
     ],
     "*.+(js|jsx|ts|tsx|json|css|md|mdx)": [
       "npx prettier --write"
