@@ -172,12 +172,14 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
 }
 
 /**
- * 获取全站文章总数（不区分语言），用于首页统计展示。
+ * 获取单语言文章总数（locale='zh'），用于首页统计展示。
+ * EN/ZH 1:1 翻译，只取一种语言的数量即可。
  */
 export async function fetchTotalGuideCount(): Promise<number> {
   const { count, error } = await supabase
     .from('pitfallfree_guides')
     .select('id', { count: 'exact', head: true })
+    .eq('locale', 'zh')
     .eq('draft', false)
 
   if (error || count === null) return 0
