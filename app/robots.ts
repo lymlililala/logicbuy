@@ -17,15 +17,15 @@ export default function robots(): MetadataRoute.Robots {
       // 主流 AI 训练爬虫 — 只允许读内容页，禁止 API 和后台
       {
         userAgent: [
-          'GPTBot',          // OpenAI
-          'ChatGPT-User',    // ChatGPT browse
-          'ClaudeBot',       // Anthropic
+          'GPTBot', // OpenAI
+          'ChatGPT-User', // ChatGPT browse
+          'ClaudeBot', // Anthropic
           'Claude-Web',
           'anthropic-ai',
-          'PerplexityBot',   // Perplexity
-          'cohere-ai',       // Cohere
+          'PerplexityBot', // Perplexity
+          'cohere-ai', // Cohere
           'Google-Extended', // Google AI training
-          'Amazonbot',       // Amazon Alexa AI
+          'Amazonbot', // Amazon Alexa AI
           'meta-externalagent', // Meta AI
         ],
         allow: ['/en/guides/', '/zh/guides/', '/en/tags/', '/zh/tags/'],
@@ -49,11 +49,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/_next/',
-          '/static/',
-        ],
+        disallow: ['/api/', '/_next/', '/static/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

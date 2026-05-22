@@ -75,7 +75,9 @@ export async function GET() {
   lines.push(``)
 
   // ── Category Taxonomy ────────────────────────────────────
-  lines.push(`## Category Taxonomy (8 Main Categories + ${CATEGORIES.reduce((acc, c) => acc + c.subcategories.length, 0)} Subcategories)`)
+  lines.push(
+    `## Category Taxonomy (8 Main Categories + ${CATEGORIES.reduce((acc, c) => acc + c.subcategories.length, 0)} Subcategories)`
+  )
   lines.push(``)
 
   for (const cat of CATEGORIES) {

@@ -13,10 +13,10 @@ const NOW = new Date().toISOString().split('T')[0]
 /** 固定静态路由（双语言） */
 function staticRoutes(): MetadataRoute.Sitemap {
   const paths = [
-    '',          // 首页
-    'guides',    // 指南列表
-    'tags',      // 分类总览
-    'about',     // 关于
+    '', // 首页
+    'guides', // 指南列表
+    'tags', // 分类总览
+    'about', // 关于
   ]
 
   const entries: MetadataRoute.Sitemap = []
@@ -93,10 +93,7 @@ async function guideRoutes(): Promise<MetadataRoute.Sitemap> {
     if (error || !data) return []
 
     // 按 slug 分组，汇总每篇文章有哪些语言版本
-    const slugMap = new Map<
-      string,
-      { locales: string[]; lastMod: string }
-    >()
+    const slugMap = new Map<string, { locales: string[]; lastMod: string }>()
 
     for (const row of data) {
       const existing = slugMap.get(row.slug)
