@@ -172,6 +172,19 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
 }
 
 /**
+ * 获取全站文章总数（不区分语言），用于首页统计展示。
+ */
+export async function fetchTotalGuideCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from('pitfallfree_guides')
+    .select('id', { count: 'exact', head: true })
+    .eq('draft', false)
+
+  if (error || count === null) return 0
+  return count
+}
+
+/**
  * 获取所有文章的 tags 计数（按大类统计），用于分类页展示数量。
  * 返回 { tagSlug: count } 的 map。
  */
