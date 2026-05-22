@@ -31,6 +31,13 @@ function toLabel(tag: string): string {
   return tag.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
+/** 将数字向下取整到最高位，返回 "N+" 格式，个位数直接返回字符串 */
+function roundedStat(n: number): string {
+  if (n < 10) return String(n)
+  const magnitude = Math.pow(10, Math.floor(Math.log10(n)))
+  return `${Math.floor(n / magnitude) * magnitude}+`
+}
+
 function formatLocalDate(dateStr: string, locale: string): string {
   try {
     const d = new Date(dateStr)
@@ -191,15 +198,15 @@ export default function MainLocale({
             <div className="mt-8 flex gap-6">
               {[
                 {
-                  num: stats ? `${stats.totalGuides}+` : '300+',
+                  num: stats ? roundedStat(stats.totalGuides) : '300+',
                   label: isZh ? '深度指南' : 'In-depth Guides',
                 },
                 {
-                  num: stats ? String(stats.totalCategories) : '8',
+                  num: stats ? roundedStat(stats.totalCategories) : '8',
                   label: isZh ? '大品类' : 'Categories',
                 },
                 {
-                  num: stats ? `${stats.totalSubcategories}+` : '50+',
+                  num: stats ? roundedStat(stats.totalSubcategories) : '50+',
                   label: isZh ? '子品类' : 'Subcategories',
                 },
               ].map((stat) => (
