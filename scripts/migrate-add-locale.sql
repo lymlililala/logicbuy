@@ -1,5 +1,5 @@
 -- ============================================================
--- PitfallFree — 表结构迁移：添加 locale 多语言支持
+-- LogicBuy — 表结构迁移：添加 locale 多语言支持
 -- 在 Supabase SQL Editor 执行:
 --   https://supabase.com/dashboard/project/tixgzezefjjsyuzgdhcd/sql/new
 -- ============================================================

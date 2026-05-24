@@ -19,7 +19,7 @@ interface AmazonSearchButtonProps {
  * <AmazonSearchButton
  *   label="grain-free, high-protein cat food"
  *   keywords="grain free high protein cat food"
- *   affiliateTag="pitfallfree-20"
+ *   affiliateTag="logicbuy-20"
  * />
  */
 export default function AmazonSearchButton({
@@ -27,7 +27,7 @@ export default function AmazonSearchButton({
   keywords,
   nodeId,
   refinements,
-  affiliateTag = 'pitfallfree-20',
+  affiliateTag = 'logicbuy-20',
 }: AmazonSearchButtonProps) {
   const params = new URLSearchParams()
   params.set('k', keywords)

@@ -11,7 +11,8 @@
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky",
     "db:create-table": "node scripts/create-pitfallfree-table.mjs",
-    "db:seed": "node scripts/seed-pitfallfree-guides.mjs"
+    "db:seed": "node scripts/seed-pitfallfree-guides.mjs",
+    "db:translate": "node scripts/translate-articles-en.mjs"
   },
   "dependencies": {
     "@headlessui/react": "2.2.9",
