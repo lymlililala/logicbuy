@@ -264,7 +264,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_pitfallfree_guides_slug_locale
 
 // ── 主流程 ──────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('🚀 PitfallFree — XHS Articles Seed Script')
+  console.log('🚀 LogicBuy — XHS Articles Seed Script')
   console.log(`   Supabase:  ${SUPABASE_URL}`)
   console.log(`   Source:    ${ARTICLES_DIR}`)
   console.log(`   Table:     pitfallfree_guides (locale=zh)\n`)

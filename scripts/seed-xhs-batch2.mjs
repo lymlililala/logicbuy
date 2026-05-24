@@ -259,7 +259,7 @@ function parseArticle(filePath) {
 
 // ── 主流程 ──────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('🚀 PitfallFree — XHS Articles Batch 2 (59-300) Seed Script')
+  console.log('🚀 LogicBuy — XHS Articles Batch 2 (59-300) Seed Script')
   console.log(`   Supabase:  ${SUPABASE_URL}`)
   console.log(`   Source:    ${ARTICLES_DIR}`)
   console.log(`   Range:     ${FROM_NUM} ~ ${TO_NUM}`)
