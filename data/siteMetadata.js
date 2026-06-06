@@ -7,7 +7,7 @@ const siteMetadata = {
     'The global knowledge base for spec-driven, brand-free consumer decisions. Smart Decisions, Zero BS.',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://www.logicbuy.guide',
+  siteUrl: 'https://logicbuy.guide',
   siteRepo: 'https://github.com/lymlililala/logicbuy',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
