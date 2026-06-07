@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import guideRedirects from '@/data/guide-redirects.json'
 
 const supabaseUrl = 'https://tixgzezefjjsyuzgdhcd.supabase.co'
 const supabaseAnonKey =
@@ -204,4 +205,49 @@ export async function fetchTagCounts(locale: string): Promise<Record<string, num
     }
   }
   return counts
+}
+
+/** 已被 301 合并的旧 slug：相关推荐里要排除，避免内链指向会跳转的页面 */
+const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))
+
+/**
+ * 获取与当前文章相关的文章（按共享标签数排序），用于详情页「相关指南」内链。
+ * - 仅同语言、非草稿、未被合并的文章
+ * - 排除自身
+ * - 共享标签越多越靠前；同分按发布时间倒序
+ */
+export async function fetchRelatedGuides(
+  currentSlug: string,
+  tags: string[],
+  locale: string,
+  limit = 6
+): Promise<Guide[]> {
+  if (!tags || tags.length === 0) return []
+
+  const { data, error } = await supabase
+    .from('pitfallfree_guides')
+    .select('id, slug, locale, title, summary, tags, published_at')
+    .overlaps('tags', tags)
+    .eq('locale', locale)
+    .eq('draft', false)
+    .neq('slug', currentSlug)
+    .limit(60)
+
+  if (error || !data) return []
+
+  const tagSet = new Set(tags)
+  const seen = new Set<string>()
+  const scored = (data as Guide[])
+    .filter((g) => {
+      if (REDIRECTED_SLUGS.has(g.slug) || seen.has(g.slug)) return false
+      seen.add(g.slug)
+      return true
+    })
+    .map((g) => ({
+      guide: g,
+      shared: (g.tags || []).filter((t) => tagSet.has(t)).length,
+    }))
+    .sort((a, b) => b.shared - a.shared || (b.guide.published_at > a.guide.published_at ? 1 : -1))
+
+  return scored.slice(0, limit).map((s) => s.guide)
 }

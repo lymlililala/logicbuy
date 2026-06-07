@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { fetchGuideBySlug, fetchGuideList, checkGuideLocales } from '@/lib/supabase'
+import { fetchGuideBySlug, fetchGuideList, checkGuideLocales, fetchRelatedGuides } from '@/lib/supabase'
 import { markdownToHtml } from '@/lib/markdown'
 import siteMetadata from '@/data/siteMetadata'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import RelatedGuides from '@/components/guide/RelatedGuides'
 import { formatDate } from 'pliny/utils/formatDate'
 
 // ISR：静态生成 + 每天最多重新生成一次，降低 Supabase egress
@@ -81,6 +82,9 @@ export default async function GuidePage(props: {
   const isFallback = guide.locale !== locale
   const otherLocale = locale === 'zh' ? 'en' : 'zh'
   const hasOtherLocale = availableLocales.includes(otherLocale)
+
+  // 相关指南（同标签内链集群）—— 用展示语言，回退到文章实际语言
+  const relatedGuides = await fetchRelatedGuides(slug, guide.tags || [], guide.locale)
 
   // JSON-LD 结构化数据
   const jsonLd = {
@@ -165,6 +169,9 @@ export default async function GuidePage(props: {
               dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
           </div>
+
+          {/* ── Related guides (internal linking) ── */}
+          <RelatedGuides guides={relatedGuides} locale={locale} />
 
           {/* ── Footer ── */}
           <footer>
