@@ -3,6 +3,9 @@ const createNextIntlPlugin = require('next-intl/plugin')
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
+// 同主题蚕食页 → canonical 的 301 合并映射（单一数据源，sitemap.ts 同源排除）
+const guideRedirects = require('./data/guide-redirects.json')
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -97,6 +100,17 @@ module.exports = () => {
           headers: securityHeaders,
         },
       ]
+    },
+    async redirects() {
+      // 双语各生成一条：/{locale}/guides/{旧slug} → /{locale}/guides/{保留slug}（301/308）
+      const locales = ['en', 'zh']
+      return Object.entries(guideRedirects).flatMap(([from, to]) =>
+        locales.map((locale) => ({
+          source: `/${locale}/guides/${from}`,
+          destination: `/${locale}/guides/${to}`,
+          permanent: true,
+        }))
+      )
     },
     webpack: (config, options) => {
       config.module.rules.push({
