@@ -35,7 +35,7 @@ export default function Footer({ locale }: FooterProps) {
         <div className="mb-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs">
           {navLinks.map((link) => (
             <Link
-              key={link.href + link.label}
+              key={link.label}
               href={link.href}
               className="text-gray-400 transition hover:text-blue-600 dark:text-gray-600 dark:hover:text-blue-400"
             >
