@@ -8,6 +8,9 @@ import siteMetadata from '@/data/siteMetadata'
 
 const PER_PAGE = 10
 
+// ISR：每天最多重新生成一次，构建期 Supabase 异常也能在运行时自愈
+export const revalidate = 86400
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'nav' })

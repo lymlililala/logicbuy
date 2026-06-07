@@ -8,6 +8,11 @@ import Tag from '@/components/Tag'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { formatDate } from 'pliny/utils/formatDate'
 
+// ISR：静态生成 + 每天最多重新生成一次，降低 Supabase egress
+export const revalidate = 86400
+// 构建期未生成的 slug 在运行时按需生成，避免构建期 Supabase 异常导致整站 500
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   // 取所有语言的文章，合并去重 slug，确保每个 slug × locale 都生成静态页
   const [zhGuides, enGuides] = await Promise.all([fetchGuideList('zh'), fetchGuideList('en')])
