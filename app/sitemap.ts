@@ -86,54 +86,69 @@ function categoryRoutes(): MetadataRoute.Sitemap {
 /** 从 Supabase 拉取全量文章路由 */
 async function guideRoutes(): Promise<MetadataRoute.Sitemap> {
   try {
-    const { data, error } = await supabase
-      .from('pitfallfree_guides')
-      .select('slug, locale, published_at, lastmod')
-      .eq('draft', false)
-      .order('published_at', { ascending: false })
-
-    if (error || !data) return []
-
-    // 按 slug 分组，汇总每篇文章有哪些语言版本
-    const slugMap = new Map<string, { locales: string[]; lastMod: string }>()
-
-    for (const row of data) {
-      const existing = slugMap.get(row.slug)
-      // 取 lastmod 日期部分；钳制到不超过今天，避免未来日期损害 Google 对 sitemap 的信任
-      const raw = (row.lastmod || row.published_at || NOW).slice(0, 10)
-      const mod = raw > NOW ? NOW : raw
-      if (existing) {
-        existing.locales.push(row.locale)
-        if (mod > existing.lastMod) existing.lastMod = mod
-      } else {
-        slugMap.set(row.slug, { locales: [row.locale], lastMod: mod })
-      }
+    // Supabase REST 单次最多返回 1000 行；分页拉取全量，避免文章 >1000 时漏掉末尾页面
+    type Row = { slug: string; locale: string; published_at: string | null; lastmod: string | null }
+    const data: Row[] = []
+    const PAGE = 1000
+    for (let from = 0; ; from += PAGE) {
+      const { data: page, error } = await supabase
+        .from('pitfallfree_guides')
+        .select('slug, locale, published_at, lastmod')
+        .eq('draft', false)
+        .order('published_at', { ascending: false })
+        .range(from, from + PAGE - 1)
+      if (error) return from === 0 ? [] : data.length ? finalize(data) : []
+      if (!page || page.length === 0) break
+      data.push(...(page as Row[]))
+      if (page.length < PAGE) break
     }
 
-    const entries: MetadataRoute.Sitemap = []
-
-    for (const [slug, { locales, lastMod }] of slugMap.entries()) {
-      if (REDIRECTED_SLUGS.has(slug)) continue // 已合并的旧 slug 跳过
-      const alternates: Record<string, string> = {}
-      for (const loc of locales) {
-        alternates[loc] = `${BASE}/${loc}/guides/${slug}`
-      }
-
-      for (const loc of locales) {
-        entries.push({
-          url: `${BASE}/${loc}/guides/${slug}`,
-          lastModified: lastMod,
-          changeFrequency: 'monthly',
-          priority: 0.8,
-          alternates: { languages: alternates },
-        })
-      }
-    }
-
-    return entries
+    return finalize(data)
   } catch {
     return []
   }
+}
+
+/** 把拉取到的文章行转成 sitemap 条目（slug 分组 + 双语 alternates + lastmod 钳制） */
+function finalize(
+  data: { slug: string; locale: string; published_at: string | null; lastmod: string | null }[]
+): MetadataRoute.Sitemap {
+  const slugMap = new Map<string, { locales: string[]; lastMod: string }>()
+
+  for (const row of data) {
+    const existing = slugMap.get(row.slug)
+    // 取 lastmod 日期部分；钳制到不超过今天，避免未来日期损害 Google 对 sitemap 的信任
+    const raw = (row.lastmod || row.published_at || NOW).slice(0, 10)
+    const mod = raw > NOW ? NOW : raw
+    if (existing) {
+      existing.locales.push(row.locale)
+      if (mod > existing.lastMod) existing.lastMod = mod
+    } else {
+      slugMap.set(row.slug, { locales: [row.locale], lastMod: mod })
+    }
+  }
+
+  const entries: MetadataRoute.Sitemap = []
+
+  for (const [slug, { locales, lastMod }] of slugMap.entries()) {
+    if (REDIRECTED_SLUGS.has(slug)) continue // 已合并的旧 slug 跳过
+    const alternates: Record<string, string> = {}
+    for (const loc of locales) {
+      alternates[loc] = `${BASE}/${loc}/guides/${slug}`
+    }
+
+    for (const loc of locales) {
+      entries.push({
+        url: `${BASE}/${loc}/guides/${slug}`,
+        lastModified: lastMod,
+        changeFrequency: 'monthly',
+        priority: 0.8,
+        alternates: { languages: alternates },
+      })
+    }
+  }
+
+  return entries
 }
 
 /** taxonomy 已覆盖的标签 slug（大类 + 子类），用于排除孤儿标签去重 */
