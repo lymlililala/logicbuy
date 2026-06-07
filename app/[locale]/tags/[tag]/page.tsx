@@ -319,6 +319,28 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
             </Link>
           </div>
         )}
+
+        {/* ── Related categories (cross-linking sibling subcategories) ── */}
+        {activeCat && activeCat.subcategories.filter((s) => s.slug !== decodedTag).length > 0 && (
+          <section className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-700">
+            <h2 className="mb-4 text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              {isZh ? '相关品类' : 'Related Categories'}
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {activeCat.subcategories
+                .filter((s) => s.slug !== decodedTag)
+                .map((sub) => (
+                  <Link
+                    key={sub.slug}
+                    href={`/${locale}/tags/${sub.slug}`}
+                    className="rounded-full border border-gray-200 px-3.5 py-1.5 text-sm text-gray-600 transition hover:border-blue-300 hover:text-blue-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-blue-700 dark:hover:text-blue-400"
+                  >
+                    {isZh ? sub.labelZh : sub.labelEn}
+                  </Link>
+                ))}
+            </div>
+          </section>
+        )}
       </div>
     </>
   )

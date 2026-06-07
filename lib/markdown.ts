@@ -2,6 +2,7 @@ import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
+import { rehypeInternalLinks, type LinkEntry } from './internalLinks'
 
 /**
  * 将 MDX 自定义组件预处理为等价的纯 Markdown。
@@ -111,14 +112,19 @@ function stripMdxComponents(content: string): string {
 }
 
 /**
- * 将 Markdown 字符串渲染为安全 HTML 字符串（服务端使用）
+ * 将 Markdown 字符串渲染为安全 HTML 字符串（服务端使用）。
+ * 传入 internalLinks 时，会在正文中注入站内产品内链（结构安全的 HAST 处理）。
  */
-export async function markdownToHtml(markdown: string): Promise<string> {
+export async function markdownToHtml(
+  markdown: string,
+  opts?: { internalLinks?: LinkEntry[]; locale?: string }
+): Promise<string> {
   const preprocessed = stripMdxComponents(markdown)
 
   const result = await remark()
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: false })
+    .use(rehypeInternalLinks, opts?.internalLinks || [], opts?.locale || 'en')
     .use(rehypeStringify)
     .process(preprocessed)
 

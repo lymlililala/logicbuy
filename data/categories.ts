@@ -214,6 +214,20 @@ export function getCategoryBySubSlug(subSlug: string): Category | undefined {
   return CATEGORIES.find((c) => c.subcategories.some((s) => s.slug === subSlug))
 }
 
+/** 从文章 tags 推断所属大类（优先匹配大类 slug，其次匹配子类的父类） */
+export function getCategoryForTags(tags: string[] | null | undefined): Category | undefined {
+  if (!tags || tags.length === 0) return undefined
+  for (const t of tags) {
+    const c = getCategoryBySlug(t)
+    if (c) return c
+  }
+  for (const t of tags) {
+    const c = getCategoryBySubSlug(t)
+    if (c) return c
+  }
+  return undefined
+}
+
 /** 获取大类 label */
 export function getCategoryLabel(slug: string, locale: string): string {
   const cat = getCategoryBySlug(slug)
