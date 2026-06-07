@@ -99,7 +99,9 @@ async function guideRoutes(): Promise<MetadataRoute.Sitemap> {
 
     for (const row of data) {
       const existing = slugMap.get(row.slug)
-      const mod = row.lastmod || row.published_at || NOW
+      // 取 lastmod 日期部分；钳制到不超过今天，避免未来日期损害 Google 对 sitemap 的信任
+      const raw = (row.lastmod || row.published_at || NOW).slice(0, 10)
+      const mod = raw > NOW ? NOW : raw
       if (existing) {
         existing.locales.push(row.locale)
         if (mod > existing.lastMod) existing.lastMod = mod
