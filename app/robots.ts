@@ -8,11 +8,12 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // ── 主流搜索引擎：完整抓取权限，只屏蔽技术内部路径 ──
+      // ── 主流搜索引擎：完整抓取权限 ──
+      // 不屏蔽 /_next/：渲染页面需要其中的 JS/CSS/字体，Google 要求可抓取渲染资源
       {
         userAgent: ['Googlebot', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider'],
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
 
       // ── AI 训练爬虫：允许内容页，屏蔽 API ──
@@ -60,11 +61,11 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/',
       },
 
-      // ── 其余所有爬虫：允许公开页面 ──
+      // ── 其余所有爬虫：允许公开页面与渲染资源（/_next/），仅屏蔽 API ──
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
