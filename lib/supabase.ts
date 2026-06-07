@@ -7,6 +7,9 @@ const supabaseAnonKey =
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+/** 已被 301 合并的旧 slug：从列表/计数/推荐中排除，避免重复计数或指向会跳转的页面 */
+const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))
+
 export interface Guide {
   id: number
   slug: string
@@ -38,7 +41,7 @@ export async function fetchGuideList(locale: string): Promise<Guide[]> {
     .order('published_at', { ascending: false })
 
   if (!localeError && localeData && localeData.length > 0) {
-    return localeData as Guide[]
+    return (localeData as Guide[]).filter((g) => !REDIRECTED_SLUGS.has(g.slug))
   }
 
   // fallback：取中文文章
@@ -50,7 +53,7 @@ export async function fetchGuideList(locale: string): Promise<Guide[]> {
       .eq('draft', false)
       .order('published_at', { ascending: false })
 
-    return (zhData as Guide[]) || []
+    return ((zhData as Guide[]) || []).filter((g) => !REDIRECTED_SLUGS.has(g.slug))
   }
 
   return []
@@ -162,7 +165,7 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
       .eq('draft', false)
       .order('published_at', { ascending: false })
     if (error) return []
-    return (data as Guide[]) || []
+    return ((data as Guide[]) || []).filter((g) => !REDIRECTED_SLUGS.has(g.slug))
   }
 
   const result = await tryLocale(locale)
@@ -177,14 +180,15 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
  * EN/ZH 1:1 翻译，只取一种语言的数量即可。
  */
 export async function fetchTotalGuideCount(): Promise<number> {
-  const { count, error } = await supabase
+  // 统计真实规范文章数：排除已 301 合并的旧 slug，避免重复计数
+  const { data, error } = await supabase
     .from('pitfallfree_guides')
-    .select('id', { count: 'exact', head: true })
+    .select('slug')
     .eq('locale', 'zh')
     .eq('draft', false)
 
-  if (error || count === null) return 0
-  return count
+  if (error || !data) return 0
+  return data.filter((r: { slug: string }) => !REDIRECTED_SLUGS.has(r.slug)).length
 }
 
 /**
@@ -194,21 +198,19 @@ export async function fetchTotalGuideCount(): Promise<number> {
 export async function fetchTagCounts(locale: string): Promise<Record<string, number>> {
   const { data } = await supabase
     .from('pitfallfree_guides')
-    .select('tags')
+    .select('slug, tags')
     .eq('locale', locale)
     .eq('draft', false)
 
   const counts: Record<string, number> = {}
   for (const row of data || []) {
+    if (REDIRECTED_SLUGS.has(row.slug)) continue // 排除已合并文章，避免计数虚高
     for (const tag of row.tags || []) {
       counts[tag] = (counts[tag] || 0) + 1
     }
   }
   return counts
 }
-
-/** 已被 301 合并的旧 slug：相关推荐里要排除，避免内链指向会跳转的页面 */
-const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))
 
 /** 轻量获取某语言全部非草稿、未合并的 slug（用于正文内联内链关键词表）。 */
 export async function fetchAllSlugs(locale: string): Promise<string[]> {
