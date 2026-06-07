@@ -130,12 +130,77 @@ async function guideRoutes(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
+/** taxonomy 已覆盖的标签 slug（大类 + 子类），用于排除孤儿标签去重 */
+function taxonomyTagSlugs(): Set<string> {
+  const slugs = new Set<string>()
+  for (const cat of CATEGORIES) {
+    slugs.add(cat.slug)
+    for (const sub of cat.subcategories) slugs.add(sub.slug)
+  }
+  return slugs
+}
+
+/** 通用噪音标签：几乎挂在每篇文章上，对应页面等同于全站列表，不应收录 */
+const TAG_BLOCKLIST = new Set(['tags', 'buying-guide'])
+/** 孤儿标签收录门槛：少于该文章数的标签页内容过薄，不进 sitemap */
+const MIN_TAG_GUIDES = 3
+
+/**
+ * 实质性「孤儿标签」页：被文章真实使用、文章数 ≥ MIN_TAG_GUIDES、
+ * 不在 taxonomy、且非通用噪音的标签。这些页面返回 200 且被文章内链引用，
+ * 收录可让其被正常索引，而薄/重复/噪音标签则排除在外。
+ * EN/ZH 1:1 翻译，按 zh 统计文章数即可。
+ */
+async function orphanTagRoutes(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const { data, error } = await supabase
+      .from('pitfallfree_guides')
+      .select('tags')
+      .eq('locale', 'zh')
+      .eq('draft', false)
+
+    if (error || !data) return []
+
+    const taxonomy = taxonomyTagSlugs()
+    const counts = new Map<string, number>()
+    for (const row of data) {
+      for (const tag of (row.tags as string[] | null) || []) {
+        if (taxonomy.has(tag) || TAG_BLOCKLIST.has(tag)) continue
+        counts.set(tag, (counts.get(tag) || 0) + 1)
+      }
+    }
+
+    const entries: MetadataRoute.Sitemap = []
+    for (const [tag, n] of counts) {
+      if (n < MIN_TAG_GUIDES) continue
+      for (const locale of LOCALES) {
+        entries.push({
+          url: `${BASE}/${locale}/tags/${tag}`,
+          lastModified: NOW,
+          changeFrequency: 'weekly',
+          priority: 0.5,
+          alternates: {
+            languages: {
+              en: `${BASE}/en/tags/${tag}`,
+              zh: `${BASE}/zh/tags/${tag}`,
+            },
+          },
+        })
+      }
+    }
+    return entries
+  } catch {
+    return []
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [guides, cats, statics] = await Promise.all([
+  const [guides, cats, orphanTags, statics] = await Promise.all([
     guideRoutes(),
     Promise.resolve(categoryRoutes()),
+    orphanTagRoutes(),
     Promise.resolve(staticRoutes()),
   ])
 
-  return [...statics, ...cats, ...guides]
+  return [...statics, ...cats, ...orphanTags, ...guides]
 }
