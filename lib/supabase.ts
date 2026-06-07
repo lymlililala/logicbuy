@@ -210,6 +210,16 @@ export async function fetchTagCounts(locale: string): Promise<Record<string, num
 /** 已被 301 合并的旧 slug：相关推荐里要排除，避免内链指向会跳转的页面 */
 const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))
 
+/** 轻量获取某语言全部非草稿、未合并的 slug（用于正文内联内链关键词表）。 */
+export async function fetchAllSlugs(locale: string): Promise<string[]> {
+  const { data } = await supabase
+    .from('pitfallfree_guides')
+    .select('slug')
+    .eq('locale', locale)
+    .eq('draft', false)
+  return (data || []).map((r: { slug: string }) => r.slug).filter((s) => !REDIRECTED_SLUGS.has(s))
+}
+
 /**
  * 获取与当前文章相关的文章（按共享标签数排序），用于详情页「相关指南」内链。
  * - 仅同语言、非草稿、未被合并的文章

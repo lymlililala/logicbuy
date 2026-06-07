@@ -5,13 +5,17 @@ import {
   fetchGuideList,
   checkGuideLocales,
   fetchRelatedGuides,
+  fetchAllSlugs,
 } from '@/lib/supabase'
 import { markdownToHtml } from '@/lib/markdown'
+import { buildInternalLinkEntries } from '@/lib/internalLinks'
 import siteMetadata from '@/data/siteMetadata'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import RelatedGuides from '@/components/guide/RelatedGuides'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import { getCategoryForTags } from '@/data/categories'
 import { formatDate } from 'pliny/utils/formatDate'
 
 // ISR：静态生成 + 每天最多重新生成一次，降低 Supabase egress
@@ -79,8 +83,12 @@ export default async function GuidePage(props: {
 
   if (!guide) return notFound()
 
-  // 渲染 Markdown → HTML
-  const contentHtml = await markdownToHtml(guide.content)
+  // 正文内联内链：用全量 slug 构建产品词→guide 映射，渲染时注入站内链接
+  const allSlugs = await fetchAllSlugs(guide.locale)
+  const internalLinks = buildInternalLinkEntries(allSlugs, slug)
+
+  // 渲染 Markdown → HTML（含正文内联内链）
+  const contentHtml = await markdownToHtml(guide.content, { internalLinks, locale })
 
   // 检查是否有其他语言版本（用于语言切换提示）
   const availableLocales = await checkGuideLocales(slug)
@@ -90,6 +98,22 @@ export default async function GuidePage(props: {
 
   // 相关指南（同标签内链集群）—— 用展示语言，回退到文章实际语言
   const relatedGuides = await fetchRelatedGuides(slug, guide.tags || [], guide.locale)
+
+  // 面包屑：首页 › 分类 › 当前文章（分类由 tags 推断）
+  const category = getCategoryForTags(guide.tags)
+  const crumbs = [
+    { label: locale === 'zh' ? '首页' : 'Home', href: `/${locale}` },
+    { label: locale === 'zh' ? '全部指南' : 'Guides', href: `/${locale}/guides` },
+    ...(category
+      ? [
+          {
+            label: locale === 'zh' ? category.labelZh : category.labelEn,
+            href: `/${locale}/tags/${category.slug}`,
+          },
+        ]
+      : []),
+    { label: guide.title },
+  ]
 
   // JSON-LD 结构化数据
   const jsonLd = {
@@ -108,15 +132,34 @@ export default async function GuidePage(props: {
     },
   }
 
+  // BreadcrumbList 结构化数据（与可见面包屑一致，可获得面包屑富媒体结果）
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.label,
+      ...(c.href ? { item: `${siteMetadata.siteUrl}${c.href}` } : {}),
+    })),
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <ScrollTopAndComment />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
+          {/* ── Breadcrumbs ── */}
+          <Breadcrumbs items={crumbs} />
+
           {/* ── Header ── */}
           <header className="pt-6 xl:pb-6">
             <div className="space-y-4 text-center">
