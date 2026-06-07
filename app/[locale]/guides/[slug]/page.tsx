@@ -1,6 +1,11 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { fetchGuideBySlug, fetchGuideList, checkGuideLocales, fetchRelatedGuides } from '@/lib/supabase'
+import {
+  fetchGuideBySlug,
+  fetchGuideList,
+  checkGuideLocales,
+  fetchRelatedGuides,
+} from '@/lib/supabase'
 import { markdownToHtml } from '@/lib/markdown'
 import siteMetadata from '@/data/siteMetadata'
 import Link from '@/components/Link'
