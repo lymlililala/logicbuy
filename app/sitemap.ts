@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { CATEGORIES } from '@/data/categories'
 import { supabase } from '@/lib/supabase'
+import guideRedirects from '@/data/guide-redirects.json'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600 // 1 小时重新生成一次
@@ -9,6 +10,8 @@ export const revalidate = 3600 // 1 小时重新生成一次
 const LOCALES = ['en', 'zh'] as const
 const BASE = siteMetadata.siteUrl
 const NOW = new Date().toISOString().split('T')[0]
+// 已被 301 合并掉的旧 slug：不再列入 sitemap（否则会列出会跳转的 URL）
+const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))
 
 /** 固定静态路由（双语言） */
 function staticRoutes(): MetadataRoute.Sitemap {
@@ -108,6 +111,7 @@ async function guideRoutes(): Promise<MetadataRoute.Sitemap> {
     const entries: MetadataRoute.Sitemap = []
 
     for (const [slug, { locales, lastMod }] of slugMap.entries()) {
+      if (REDIRECTED_SLUGS.has(slug)) continue // 已合并的旧 slug 跳过
       const alternates: Record<string, string> = {}
       for (const loc of locales) {
         alternates[loc] = `${BASE}/${loc}/guides/${slug}`
