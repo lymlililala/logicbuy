@@ -6,6 +6,9 @@ import siteMetadata from '@/data/siteMetadata'
 
 const SOCIAL_BANNER = `${siteMetadata.siteUrl}/static/images/twitter-card.png`
 
+// ISR：每天最多重新生成一次，构建期 Supabase 异常也能在运行时自愈
+export const revalidate = 86400
+
 export async function generateMetadata({
   params,
 }: {

@@ -12,6 +12,11 @@ import { formatDate } from 'pliny/utils/formatDate'
 import siteMetadata from '@/data/siteMetadata'
 import type { Metadata } from 'next'
 
+// ISR：静态生成 + 每天最多重新生成一次，降低 Supabase egress
+export const revalidate = 86400
+// 构建期未生成的 tag 在运行时按需生成，避免构建期 Supabase 异常导致整站 500
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   const locales = ['en', 'zh']
   const allTagSlugs = new Set<string>()
