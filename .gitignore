@@ -46,3 +46,4 @@ yarn-error.log*
 
 # GSC 报告（本地分析用，勿提交）
 gsc_info/
+scripts/content-pipeline/existing.json

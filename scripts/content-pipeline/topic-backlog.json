@@ -1,0 +1,365 @@
+{
+  "_note": "内容流水线主题待办：信息型 spoke 文章，区隔于 buying guide，跨链到 parent。daily cron 每天取未用的 5 个生成。生成后把 used 改为发布日期。",
+  "topics": [
+    {
+      "slug": "keyboard-layouts-tkl-65-75-explained",
+      "cat": "tech-electronics",
+      "sub": "mechanical-keyboards",
+      "parent": "mechanical-keyboard-buying-guide",
+      "titleEn": "Keyboard Layouts Explained: Full-Size vs TKL vs 75% vs 65% vs 60%",
+      "titleZh": "键盘配列详解：全尺寸 / TKL / 75% / 65% / 60% 怎么选",
+      "used": "2026-06-08"
+    },
+    {
+      "slug": "bluetooth-audio-codecs-explained",
+      "cat": "tech-electronics",
+      "sub": "anc-headphones",
+      "parent": "wireless-headphones-anc-codec-driver-guide",
+      "titleEn": "Bluetooth Audio Codecs Explained: SBC vs AAC vs aptX vs LDAC",
+      "titleZh": "蓝牙音频编解码详解：SBC / AAC / aptX / LDAC 区别",
+      "used": ""
+    },
+    {
+      "slug": "wifi-6-vs-6e-vs-7-explained",
+      "cat": "tech-electronics",
+      "sub": "computers-peripherals",
+      "parent": "wifi-router-buying-guide",
+      "titleEn": "Wi-Fi 6 vs Wi-Fi 6E vs Wi-Fi 7 Explained: What the Differences Actually Mean",
+      "titleZh": "Wi-Fi 6 / 6E / 7 区别详解：到底升级了什么",
+      "used": ""
+    },
+    {
+      "slug": "monitor-refresh-rate-vs-response-time-explained",
+      "cat": "tech-electronics",
+      "sub": "monitors",
+      "parent": "gaming-monitor-refresh-rate-panel-response-guide",
+      "titleEn": "Refresh Rate vs Response Time Explained: Why They Are Not the Same Thing",
+      "titleZh": "刷新率 vs 响应时间：这两个数字到底有什么不同",
+      "used": ""
+    },
+    {
+      "slug": "raid-levels-explained-home-nas",
+      "cat": "tech-electronics",
+      "sub": "computers-peripherals",
+      "parent": "home-nas-drive-bays-raid-setup-guide",
+      "titleEn": "RAID Levels Explained for Home NAS: 0, 1, 5, 6, and 10",
+      "titleZh": "家用 NAS 的 RAID 级别详解：0 / 1 / 5 / 6 / 10",
+      "used": ""
+    },
+    {
+      "slug": "usb-c-vs-thunderbolt-explained",
+      "cat": "tech-electronics",
+      "sub": "laptops",
+      "parent": "laptop-buying-guide-cpu-ram-display-explained",
+      "titleEn": "USB-C vs Thunderbolt Explained: Same Port, Very Different Capabilities",
+      "titleZh": "USB-C vs 雷电接口：长得一样，能力差很多",
+      "used": ""
+    },
+    {
+      "slug": "tv-hdr-formats-explained",
+      "cat": "tech-electronics",
+      "sub": "televisions",
+      "parent": "tv-oled-vs-qled-vs-miniled-panel-guide",
+      "titleEn": "TV HDR Formats Explained: HDR10 vs HDR10+ vs Dolby Vision",
+      "titleZh": "电视 HDR 格式详解：HDR10 / HDR10+ / 杜比视界",
+      "used": ""
+    },
+    {
+      "slug": "smartphone-display-ltpo-refresh-rate-explained",
+      "cat": "tech-electronics",
+      "sub": "smartphones",
+      "parent": "smartphone-guide-processor-battery-charging",
+      "titleEn": "Smartphone Display Refresh Rate and LTPO Explained",
+      "titleZh": "手机屏幕刷新率与 LTPO 详解",
+      "used": ""
+    },
+    {
+      "slug": "hepa-vs-true-hepa-vs-hepa-type-explained",
+      "cat": "home-appliances",
+      "sub": "air-purifiers",
+      "parent": "air-purifier-buying-guide",
+      "titleEn": "HEPA vs True HEPA vs HEPA-Type Explained: Which Filters Actually Work",
+      "titleZh": "HEPA / True HEPA / HEPA-Type 区别：哪种滤网才真有用",
+      "used": "2026-06-08"
+    },
+    {
+      "slug": "robot-vacuum-lidar-vs-vslam-navigation-explained",
+      "cat": "home-appliances",
+      "sub": "robot-vacuums",
+      "parent": "robot-vacuum-advanced-guide",
+      "titleEn": "Robot Vacuum Navigation Explained: LiDAR vs vSLAM vs Gyroscope",
+      "titleZh": "扫地机器人导航详解：LiDAR / vSLAM / 陀螺仪",
+      "used": ""
+    },
+    {
+      "slug": "refrigerator-inverter-compressor-explained",
+      "cat": "home-appliances",
+      "sub": "refrigerators",
+      "parent": "refrigerator-buying-guide-cooling-system",
+      "titleEn": "Refrigerator Inverter vs Conventional Compressor Explained",
+      "titleZh": "冰箱变频 vs 定频压缩机详解",
+      "used": ""
+    },
+    {
+      "slug": "washing-machine-front-load-vs-top-load-explained",
+      "cat": "home-appliances",
+      "sub": "cleaning-appliances",
+      "parent": "washing-machine-buying-guide",
+      "titleEn": "Front-Load vs Top-Load Washing Machine Explained",
+      "titleZh": "滚筒 vs 波轮洗衣机：到底差在哪",
+      "used": ""
+    },
+    {
+      "slug": "coffee-grind-size-chart-explained",
+      "cat": "home-appliances",
+      "sub": "coffee-makers",
+      "parent": "coffee-maker-buying-guide-2026",
+      "titleEn": "Coffee Grind Size Chart Explained: From Espresso to Cold Brew",
+      "titleZh": "咖啡研磨度对照详解：从意式到冷萃",
+      "used": ""
+    },
+    {
+      "slug": "dehumidifier-pint-rating-doe-standard-explained",
+      "cat": "home-appliances",
+      "sub": "dehumidifiers-humidifiers",
+      "parent": "dehumidifier-buying-guide",
+      "titleEn": "Dehumidifier Pint Rating Explained: Why the DOE Standard Changed in 2019",
+      "titleZh": "除湿机「升数」详解：为什么标准在 2019 年变了",
+      "used": ""
+    },
+    {
+      "slug": "microwave-inverter-vs-conventional-explained",
+      "cat": "home-appliances",
+      "sub": "kitchen-appliances",
+      "parent": "microwave-oven-buying-guide",
+      "titleEn": "Microwave Inverter vs Conventional Explained",
+      "titleZh": "微波炉变频 vs 普通：区别详解",
+      "used": ""
+    },
+    {
+      "slug": "mattress-foam-vs-spring-vs-hybrid-explained",
+      "cat": "home-renovation",
+      "sub": "mattresses",
+      "parent": "how-to-choose-mattress-specs",
+      "titleEn": "Mattress Types Explained: Memory Foam vs Innerspring vs Hybrid vs Latex",
+      "titleZh": "床垫类型详解：记忆棉 / 弹簧 / 混合 / 乳胶",
+      "used": "2026-06-08"
+    },
+    {
+      "slug": "paint-sheen-explained",
+      "cat": "home-renovation",
+      "sub": "paints-adhesives",
+      "parent": "latex-paint-voc-selection-guide",
+      "titleEn": "Paint Sheen Explained: Matte vs Eggshell vs Satin vs Semi-Gloss",
+      "titleZh": "油漆光泽度详解：哑光 / 蛋壳 / 丝光 / 半光",
+      "used": ""
+    },
+    {
+      "slug": "smart-lock-protocols-explained",
+      "cat": "home-renovation",
+      "sub": "windows-doors",
+      "parent": "smart-lock-buying-guide-2026",
+      "titleEn": "Smart Lock Protocols Explained: Zigbee vs Z-Wave vs Wi-Fi vs Matter",
+      "titleZh": "智能锁协议详解：Zigbee / Z-Wave / Wi-Fi / Matter",
+      "used": ""
+    },
+    {
+      "slug": "office-chair-mesh-vs-foam-explained",
+      "cat": "home-renovation",
+      "sub": "ergonomic-chairs",
+      "parent": "ergonomic-chair-buying-guide",
+      "titleEn": "Office Chair Mesh vs Foam Seat Explained",
+      "titleZh": "办公椅网布 vs 海绵坐垫：区别详解",
+      "used": ""
+    },
+    {
+      "slug": "led-color-temperature-kelvin-explained",
+      "cat": "home-renovation",
+      "sub": "building-materials",
+      "parent": "smart-bulb-led-strip-guide",
+      "titleEn": "LED Color Temperature Explained: 2700K vs 4000K vs 5000K",
+      "titleZh": "LED 色温详解：2700K / 4000K / 5000K",
+      "used": ""
+    },
+    {
+      "slug": "retinol-vs-retinaldehyde-vs-retinoid-explained",
+      "cat": "skincare-personal-care",
+      "sub": "retinol",
+      "parent": "retinol-anti-aging-guide-concentration",
+      "titleEn": "Retinol vs Retinaldehyde vs Prescription Retinoid Explained",
+      "titleZh": "视黄醇 / 视黄醛 / 处方维A酸：区别详解",
+      "used": ""
+    },
+    {
+      "slug": "spf-vs-pa-rating-explained",
+      "cat": "skincare-personal-care",
+      "sub": "sunscreen",
+      "parent": "sunscreen-buying-guide",
+      "titleEn": "SPF vs PA Rating Explained: What Each Number Protects Against",
+      "titleZh": "SPF vs PA 值详解：两个数字各防什么",
+      "used": "2026-06-08"
+    },
+    {
+      "slug": "niacinamide-vs-vitamin-c-explained",
+      "cat": "skincare-personal-care",
+      "sub": "brightening",
+      "parent": "skin-whitening-guide-niacinamide-vitamin-c",
+      "titleEn": "Niacinamide vs Vitamin C Explained: Which Brightening Ingredient and When",
+      "titleZh": "烟酰胺 vs 维生素C：美白成分怎么选、能不能一起用",
+      "used": ""
+    },
+    {
+      "slug": "aha-vs-bha-vs-pha-explained",
+      "cat": "skincare-personal-care",
+      "sub": "skincare-science",
+      "parent": "sunscreen-buying-guide",
+      "titleEn": "AHA vs BHA vs PHA Explained: Which Exfoliating Acid for Your Skin",
+      "titleZh": "AHA / BHA / PHA 详解：哪种去角质酸适合你",
+      "used": ""
+    },
+    {
+      "slug": "waterproof-rating-mm-explained-jackets",
+      "cat": "outdoors-fitness",
+      "sub": "hardshell-jackets",
+      "parent": "hardshell-jacket-waterproof-rating-fabric-guide",
+      "titleEn": "Waterproof Rating (mm) Explained for Jackets and Tents",
+      "titleZh": "冲锋衣/帐篷防水等级（mm 耐水压）详解",
+      "used": "2026-06-08"
+    },
+    {
+      "slug": "running-shoe-drop-explained",
+      "cat": "outdoors-fitness",
+      "sub": "home-gym",
+      "parent": "running-shoe-cushioning-technology-guide",
+      "titleEn": "Running Shoe Heel-to-Toe Drop Explained",
+      "titleZh": "跑鞋前后掌落差（drop）详解",
+      "used": ""
+    },
+    {
+      "slug": "tent-season-rating-explained",
+      "cat": "outdoors-fitness",
+      "sub": "tents-sleeping-bags",
+      "parent": "camping-tent-seasonality-weight-setup-guide",
+      "titleEn": "Tent Season Rating Explained: 2, 3, 3.5, and 4-Season",
+      "titleZh": "帐篷季节等级详解：2 / 3 / 3.5 / 4 季",
+      "used": ""
+    },
+    {
+      "slug": "treadmill-chp-vs-hp-explained",
+      "cat": "outdoors-fitness",
+      "sub": "treadmills",
+      "parent": "treadmill-buying-guide-2026",
+      "titleEn": "Treadmill Motor Power Explained: CHP vs HP vs Peak HP",
+      "titleZh": "跑步机马力详解：持续马力 CHP vs 峰值 HP",
+      "used": ""
+    },
+    {
+      "slug": "cat-food-aafco-statement-explained",
+      "cat": "pet-care",
+      "sub": "cat-food",
+      "parent": "cat-food-ingredients-reading-guide",
+      "titleEn": "Cat Food AAFCO Statement Explained: What 'Complete and Balanced' Means",
+      "titleZh": "猫粮 AAFCO 声明详解：「全价均衡」到底什么意思",
+      "used": ""
+    },
+    {
+      "slug": "dog-food-guaranteed-analysis-explained",
+      "cat": "pet-care",
+      "sub": "dog-food",
+      "parent": "dog-food-ingredients-guide",
+      "titleEn": "Dog Food Guaranteed Analysis Explained: Reading Protein, Fat, and Moisture",
+      "titleZh": "狗粮「保证分析值」详解：蛋白/脂肪/水分怎么读",
+      "used": ""
+    },
+    {
+      "slug": "car-seat-isofix-vs-latch-explained",
+      "cat": "baby-maternity",
+      "sub": "car-seats",
+      "parent": "car-seat-safety-certification-guide",
+      "titleEn": "Car Seat ISOFIX vs LATCH vs Seatbelt Install Explained",
+      "titleZh": "安全座椅 ISOFIX / LATCH / 安全带安装详解",
+      "used": ""
+    },
+    {
+      "slug": "stroller-travel-system-explained",
+      "cat": "baby-maternity",
+      "sub": "strollers",
+      "parent": "baby-stroller-buying-guide",
+      "titleEn": "Stroller Travel System Explained: What It Includes and Who Needs One",
+      "titleZh": "婴儿车 Travel System（旅行系统）详解：包含什么、谁需要",
+      "used": ""
+    },
+    {
+      "slug": "anc-feedforward-vs-feedback-explained",
+      "cat": "tech-electronics",
+      "sub": "anc-headphones",
+      "parent": "noise-cancelling-headphones-anc-iem-vs-over-ear-guide",
+      "titleEn": "ANC Explained: Feedforward vs Feedback vs Hybrid Noise Cancelling",
+      "titleZh": "主动降噪详解：前馈 / 反馈 / 混合式",
+      "used": ""
+    },
+    {
+      "slug": "dishwasher-water-softener-explained",
+      "cat": "home-appliances",
+      "sub": "dishwashers",
+      "parent": "dishwasher-buying-guide",
+      "titleEn": "Dishwasher Water Softener and Rinse Aid Explained",
+      "titleZh": "洗碗机软水盐与漂洗剂详解",
+      "used": ""
+    },
+    {
+      "slug": "air-conditioner-seer-eer-explained",
+      "cat": "home-appliances",
+      "sub": "air-conditioners",
+      "parent": "air-conditioner-guide-energy-efficiency-refrigerant",
+      "titleEn": "Air Conditioner SEER vs EER vs SEER2 Explained",
+      "titleZh": "空调能效详解：SEER / EER / SEER2",
+      "used": ""
+    },
+    {
+      "slug": "hyaluronic-acid-molecular-weight-explained",
+      "cat": "skincare-personal-care",
+      "sub": "skincare-science",
+      "parent": "hyaluronic-acid-peptide-skincare-guide",
+      "titleEn": "Hyaluronic Acid Molecular Weight Explained: High vs Low and Why It Matters",
+      "titleZh": "玻尿酸分子量详解：高分子 vs 低分子有什么区别",
+      "used": ""
+    },
+    {
+      "slug": "yoga-mat-thickness-explained",
+      "cat": "outdoors-fitness",
+      "sub": "yoga-mats",
+      "parent": "yoga-mat-buying-guide",
+      "titleEn": "Yoga Mat Thickness Explained: 3mm vs 5mm vs 6mm vs 10mm",
+      "titleZh": "瑜伽垫厚度详解：3mm / 5mm / 6mm / 10mm 怎么选",
+      "used": ""
+    },
+    {
+      "slug": "projector-throw-ratio-explained",
+      "cat": "tech-electronics",
+      "sub": "projectors",
+      "parent": "projector-lumens-contrast-throw-ratio-guide",
+      "titleEn": "Projector Throw Ratio Explained: Standard vs Short vs Ultra-Short Throw",
+      "titleZh": "投影仪投射比详解：标准 / 短焦 / 超短焦",
+      "used": ""
+    },
+    {
+      "slug": "smartwatch-gps-accuracy-explained",
+      "cat": "tech-electronics",
+      "sub": "smartwatches",
+      "parent": "smartwatch-buying-guide-2026",
+      "titleEn": "Smartwatch GPS Explained: Single vs Dual-Frequency and Accuracy",
+      "titleZh": "智能手表 GPS 详解：单频 vs 双频与定位精度",
+      "used": ""
+    },
+    {
+      "slug": "electric-toothbrush-sonic-vs-oscillating-explained",
+      "cat": "home-appliances",
+      "sub": "oral-care",
+      "parent": "electric-toothbrush-buying-guide",
+      "titleEn": "Electric Toothbrush Sonic vs Oscillating Explained",
+      "titleZh": "电动牙刷声波 vs 旋转式详解",
+      "used": ""
+    }
+  ]
+}
