@@ -1,11 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 import guideRedirects from '@/data/guide-redirects.json'
 
-const supabaseUrl = 'https://tixgzezefjjsyuzgdhcd.supabase.co'
-const supabaseAnonKey =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpeGd6ZXplZmpqc3l1emdkaGNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDkzNzgsImV4cCI6MjA5MzcyNTM3OH0.Hpr0F_kgFc9OkOla-UGHBioR6y2OBB2jbI-0xKMU1M4'
+const supabaseUrl = process.env.SUPABASE_URL || 'https://tixgzezefjjsyuzgdhcd.supabase.co'
+// 仅服务端使用（server component / route handler / sitemap），不带 NEXT_PUBLIC_ 前缀，key 不会进浏览器 bundle。
+// 优先 publishable（最小权限、受 RLS 保护）；未配置时回退到 secret key（高权限，仅服务端使用）。
+const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_SECRET_KEY
+if (!supabaseKey) {
+  throw new Error(
+    'Missing SUPABASE_PUBLISHABLE_KEY / SUPABASE_SECRET_KEY env var（本地见 .env.local，生产在 Vercel 环境变量配置）'
+  )
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseKey)
 
 /** 已被 301 合并的旧 slug：从列表/计数/推荐中排除，避免重复计数或指向会跳转的页面 */
 const REDIRECTED_SLUGS = new Set(Object.keys(guideRedirects))

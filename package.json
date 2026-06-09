@@ -10,9 +10,10 @@
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky",
-    "db:create-table": "node scripts/create-pitfallfree-table.mjs",
-    "db:seed": "node scripts/seed-pitfallfree-guides.mjs",
-    "db:translate": "node scripts/translate-articles-en.mjs"
+    "db:create-table": "node --env-file=.env.local scripts/create-pitfallfree-table.mjs",
+    "db:seed": "node --env-file=.env.local scripts/seed-pitfallfree-guides.mjs",
+    "db:translate": "node --env-file=.env.local scripts/translate-articles-en.mjs",
+    "db:update-tags": "node --env-file=.env.local scripts/update-article-tags.mjs"
   },
   "dependencies": {
     "@headlessui/react": "2.2.9",

@@ -14,8 +14,15 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY
+const SUPABASE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  process.env.SUPABASE_URL ||
+  'https://tixgzezefjjsyuzgdhcd.supabase.co'
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+if (!SUPABASE_SERVICE_KEY) {
+  console.error('缺少 SUPABASE_SECRET_KEY（请在 .env.local 配置；运行用 npm run db:translate 会自动加载）')
+  process.exit(1)
+}
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
