@@ -17,6 +17,13 @@ export const revalidate = 86400
 // 构建期未生成的 tag 在运行时按需生成，避免构建期 Supabase 异常导致整站 500
 export const dynamicParams = true
 
+/** 程序化分类描述：用于分类页 meta description 与可见介绍段，含问句钩子 + 价值主张 + 关键词。 */
+function categoryIntro(label: string, isZh: boolean): string {
+  return isZh
+    ? `${label}怎么选？LogicBuy 从客观参数出发，对比${label}的核心规格与选购要点，帮你看懂技术指标、避开营销噱头，按真实需求选对产品。`
+    : `How to choose ${label}? LogicBuy compares ${label} by objective specs — understand the key parameters, skip the marketing hype, and pick what truly fits your needs.`
+}
+
 export async function generateStaticParams() {
   const locales = ['en', 'zh']
   const allTagSlugs = new Set<string>()
@@ -51,7 +58,7 @@ export async function generateMetadata(props: {
   const canonical = `${siteMetadata.siteUrl}/${locale}/tags/${decodedTag}`
   return genPageMetadata({
     title,
-    description: `${siteMetadata.title} — ${title}`,
+    description: categoryIntro(label, isZh),
     alternates: {
       canonical,
       languages: {
@@ -186,6 +193,9 @@ export default async function TagPage(props: { params: Promise<{ locale: string;
           <p className="text-base text-gray-500 dark:text-gray-400">
             {guides.length} {isZh ? '篇指南' : 'guides'}
             {isZh ? '，纯参数说话' : ' · facts & specs only'}
+          </p>
+          <p className="mt-3 max-w-3xl text-base text-gray-600 dark:text-gray-400">
+            {categoryIntro(subLabel || catLabel, isZh)}
           </p>
         </div>
 
