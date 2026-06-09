@@ -130,3 +130,80 @@ export async function markdownToHtml(
 
   return result.toString()
 }
+
+/**
+ * 从正文 Markdown 提取 FAQ 段（## FAQ / ## 常见问题 / ## Frequently Asked Questions），
+ * 生成 schema.org FAQPage 结构化数据，争取精选摘要 / PAA 曝光。
+ * 约定：FAQ 段内每个 `### 问题`，其后正文（到下一个 ### 或段末）为答案。
+ * 无 FAQ 段或无有效问答时返回 null（不输出空 schema）。
+ */
+export function buildFaqJsonLd(
+  markdown: string,
+  locale: string,
+  url: string
+): Record<string, unknown> | null {
+  const lines = markdown.split('\n')
+  const faqHeadingRe = /^##\s+.*(FAQ|常见问题|常見問題|Frequently Asked)/i
+  let start = -1
+  for (let i = 0; i < lines.length; i++) {
+    if (faqHeadingRe.test(lines[i])) {
+      start = i + 1
+      break
+    }
+  }
+  if (start === -1) return null
+
+  // FAQ 段结束于下一个 ## 或 # 标题（FAQ 标题本身除外）
+  let end = lines.length
+  for (let i = start; i < lines.length; i++) {
+    if (/^#{1,2}\s+/.test(lines[i]) && !faqHeadingRe.test(lines[i])) {
+      end = i
+      break
+    }
+  }
+
+  const items: { q: string; a: string }[] = []
+  let curQ: string | null = null
+  let curA: string[] = []
+  const flush = () => {
+    if (curQ) {
+      const a = curA.join(' ').replace(/\s+/g, ' ').trim()
+      if (a) items.push({ q: curQ, a })
+    }
+    curQ = null
+    curA = []
+  }
+  for (const ln of lines.slice(start, end)) {
+    const m = ln.match(/^###\s+(.*)$/)
+    if (m) {
+      flush()
+      curQ = m[1].trim()
+    } else if (curQ) {
+      curA.push(ln)
+    }
+  }
+  flush()
+  if (items.length === 0) return null
+
+  // 答案剥离 markdown 标记，保留纯文本（schema 要求纯文本）
+  const clean = (s: string) =>
+    s
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/^[-*]\s+/gm, '')
+      .trim()
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+    url,
+    mainEntity: items.map((it) => ({
+      '@type': 'Question',
+      name: clean(it.q),
+      acceptedAnswer: { '@type': 'Answer', text: clean(it.a) },
+    })),
+  }
+}

@@ -7,7 +7,7 @@ import {
   fetchRelatedGuides,
   fetchAllSlugs,
 } from '@/lib/supabase'
-import { markdownToHtml } from '@/lib/markdown'
+import { markdownToHtml, buildFaqJsonLd } from '@/lib/markdown'
 import { buildInternalLinkEntries } from '@/lib/internalLinks'
 import siteMetadata from '@/data/siteMetadata'
 import Link from '@/components/Link'
@@ -144,6 +144,13 @@ export default async function GuidePage(props: {
     })),
   }
 
+  // FAQPage 结构化数据（从正文 ## FAQ / ## 常见问题 段解析，命中才输出，争取精选摘要 / PAA）
+  const faqJsonLd = buildFaqJsonLd(
+    guide.content,
+    locale,
+    `${siteMetadata.siteUrl}/${locale}/guides/${slug}`
+  )
+
   return (
     <>
       <script
@@ -154,6 +161,12 @@ export default async function GuidePage(props: {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       <ScrollTopAndComment />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
