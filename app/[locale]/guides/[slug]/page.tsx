@@ -66,11 +66,13 @@ export async function generateMetadata(props: {
       type: 'article',
       publishedTime: guide.published_at,
       modifiedTime: guide.lastmod || guide.published_at,
+      images: [`${siteMetadata.siteUrl}${siteMetadata.socialBanner}`],
     },
     twitter: {
       card: 'summary_large_image',
       title: guide.title,
       description: guide.summary,
+      images: [`${siteMetadata.siteUrl}${siteMetadata.socialBanner}`],
     },
   }
 }
@@ -116,6 +118,7 @@ export default async function GuidePage(props: {
   ]
 
   // JSON-LD 结构化数据
+  const guideUrl = `${siteMetadata.siteUrl}/${locale}/guides/${slug}`
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -124,11 +127,22 @@ export default async function GuidePage(props: {
     datePublished: guide.published_at,
     dateModified: guide.lastmod || guide.published_at,
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
-    url: `${siteMetadata.siteUrl}/${locale}/guides/${slug}`,
+    url: guideUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': guideUrl },
+    image: `${siteMetadata.siteUrl}${siteMetadata.socialBanner}`,
+    author: {
+      '@type': 'Organization',
+      name: siteMetadata.author,
+      url: siteMetadata.siteUrl,
+    },
     publisher: {
       '@type': 'Organization',
       name: siteMetadata.title,
       url: siteMetadata.siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteMetadata.siteUrl}${siteMetadata.siteLogo}`,
+      },
     },
   }
 
