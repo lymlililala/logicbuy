@@ -20,9 +20,12 @@ import { readFileSync, readdirSync } from 'fs'
 import path from 'path'
 
 // ── Supabase 配置 ──────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://tixgzezefjjsyuzgdhcd.supabase.co'
-const SUPABASE_SERVICE_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpeGd6ZXplZmpqc3l1emdkaGNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODE0OTM3OCwiZXhwIjoyMDkzNzI1Mzc4fQ.CBarLrHnr-tr5ZPaGs2JvW3NJE6O5O1Hw7oTWsHuI-E'
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://tixgzezefjjsyuzgdhcd.supabase.co'
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+if (!SUPABASE_SERVICE_KEY) {
+  console.error('缺少 SUPABASE_SECRET_KEY（请在 .env.local 配置；运行用 npm run db:* 会自动加载）')
+  process.exit(1)
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
