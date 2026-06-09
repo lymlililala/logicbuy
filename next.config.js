@@ -104,13 +104,26 @@ module.exports = () => {
     async redirects() {
       // 双语各生成一条：/{locale}/guides/{旧slug} → /{locale}/guides/{保留slug}（301/308）
       const locales = ['en', 'zh']
-      return Object.entries(guideRedirects).flatMap(([from, to]) =>
+      const guideMerges = Object.entries(guideRedirects).flatMap(([from, to]) =>
         locales.map((locale) => ({
           source: `/${locale}/guides/${from}`,
           destination: `/${locale}/guides/${to}`,
           permanent: true,
         }))
       )
+      // 已退场的 blog 重复副本 → guides 规范版（内容已统一到 Supabase guides 体系，消除重复）
+      const blogToGuides = {
+        'how-to-choose-mattress-specs': 'how-to-choose-mattress-specs',
+        'how-to-choose-robot-vacuum-specs': 'robot-vacuum-advanced-guide',
+      }
+      const blogMerges = Object.entries(blogToGuides).flatMap(([from, to]) =>
+        locales.map((locale) => ({
+          source: `/${locale}/blog/${from}`,
+          destination: `/${locale}/guides/${to}`,
+          permanent: true,
+        }))
+      )
+      return [...guideMerges, ...blogMerges]
     },
     webpack: (config, options) => {
       config.module.rules.push({
