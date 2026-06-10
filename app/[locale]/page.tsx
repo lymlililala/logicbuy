@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import MainLocale from './Main'
-import { fetchGuideList, fetchTotalGuideCount } from '@/lib/supabase'
+import { fetchGuideList, fetchTotalGuideCount, fetchPitfallGuides } from '@/lib/supabase'
 import { CATEGORIES } from '@/data/categories'
 import siteMetadata from '@/data/siteMetadata'
 
@@ -51,11 +51,26 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const { locale } = await params
   const isZh = locale === 'zh'
 
-  // 并行获取：当前语言文章列表 + 全站总数
-  const [guides, totalGuides] = await Promise.all([fetchGuideList(locale), fetchTotalGuideCount()])
+  // 并行获取：当前语言文章列表 + 全站总数 + 踩坑专栏文章
+  const [guides, totalGuides, pitfallGuides] = await Promise.all([
+    fetchGuideList(locale),
+    fetchTotalGuideCount(),
+    fetchPitfallGuides(locale),
+  ])
 
   // 转换为 Main 组件所需的 PostSummary 格式
   const posts = guides.map((g) => ({
+    slug: g.slug,
+    date: g.published_at,
+    title: g.title,
+    summary: g.summary,
+    tags: g.tags,
+    draft: g.draft,
+    locale: g.locale,
+  }))
+
+  // 踩坑专栏精选（首页导流区块）
+  const pitfalls = pitfallGuides.map((g) => ({
     slug: g.slug,
     date: g.published_at,
     title: g.title,
@@ -113,6 +128,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         posts={posts}
         locale={locale}
         stats={{ totalGuides, totalCategories, totalSubcategories }}
+        pitfalls={pitfalls}
       />
     </>
   )

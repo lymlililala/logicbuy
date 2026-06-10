@@ -18,6 +18,7 @@ function staticRoutes(): MetadataRoute.Sitemap {
   const paths = [
     '', // 首页
     'guides', // 指南列表
+    'pitfalls', // 踩坑指南专栏
     'tags', // 分类总览
   ]
 

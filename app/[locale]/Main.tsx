@@ -124,10 +124,12 @@ export default function MainLocale({
   posts,
   locale,
   stats,
+  pitfalls = [],
 }: {
   posts: PostSummary[]
   locale: string
   stats?: Stats
+  pitfalls?: PostSummary[]
 }) {
   const t = useTranslations('home')
   const isZh = locale === 'zh'
@@ -407,6 +409,73 @@ export default function MainLocale({
           </div>
         )}
       </section>
+
+      {/* ══════════════════════════════════════════════
+          踩坑精选 — 琥珀主题，导流到 /pitfalls 专栏
+      ══════════════════════════════════════════════ */}
+      {pitfalls.length > 0 && (
+        <section className="my-8 rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 to-orange-50 p-6 sm:p-8 dark:border-amber-900/40 dark:from-amber-950/20 dark:to-orange-950/10">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300">
+                ⚠️ {isZh ? '避坑专栏' : 'Avoid the Traps'}
+              </span>
+              <h2 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-100">
+                {isZh ? '踩坑精选' : 'Common Buying Mistakes'}
+              </h2>
+              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                {isZh
+                  ? '你最容易踩的坑，逐条拆开给你看。'
+                  : 'The pitfalls people regret most — broken down one by one.'}
+              </p>
+            </div>
+            <Link
+              href={`/${locale}/pitfalls`}
+              className="shrink-0 text-sm font-medium text-amber-700 transition hover:text-amber-800 dark:text-amber-300 dark:hover:text-amber-200"
+            >
+              {isZh ? '全部踩坑 →' : 'All pitfalls →'}
+            </Link>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            {pitfalls.slice(0, 3).map((p) => {
+              const tags = p.tags ?? []
+              const catObj = CATEGORIES.find((c) => tags.includes(c.slug))
+              const countMatch = p.title.match(/(\d+)/)
+              const count = countMatch ? parseInt(countMatch[1], 10) : null
+
+              return (
+                <Link
+                  key={p.slug}
+                  href={`/${locale}/guides/${p.slug}`}
+                  className="group flex h-full flex-col rounded-xl border border-amber-200/60 bg-white p-4 transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-amber-900/30 dark:bg-gray-900 dark:hover:border-amber-700"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    {catObj ? (
+                      <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                        {catObj.icon} {isZh ? catObj.labelZh : catObj.labelEn}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+                    {count !== null && (
+                      <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300">
+                        {isZh ? `${count} 个坑` : `${count} traps`}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="mt-2 line-clamp-2 text-sm leading-snug font-bold text-gray-900 transition group-hover:text-amber-700 dark:text-gray-100 dark:group-hover:text-amber-300">
+                    {p.title}
+                  </h3>
+                  <p className="mt-1.5 line-clamp-2 flex-1 text-[12px] leading-relaxed text-gray-500 dark:text-gray-400">
+                    {p.summary}
+                  </p>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ══════════════════════════════════════════════
           价值主张区 — 深灰极客风
