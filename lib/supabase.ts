@@ -182,6 +182,29 @@ export async function fetchGuidesByTag(tagSlug: string, locale: string): Promise
 }
 
 /**
+ * 获取「踩坑指南」专栏文章（带 pitfall-guide 标记 tag），支持 locale fallback。
+ * 用于 /pitfalls 聚合页。返回不含正文 content。
+ */
+export async function fetchPitfallGuides(locale: string): Promise<Guide[]> {
+  const tryLocale = async (loc: string) => {
+    const { data, error } = await supabase
+      .from('pitfallfree_guides')
+      .select('id, slug, locale, title, summary, tags, published_at, lastmod, draft, authors')
+      .contains('tags', ['pitfall-guide'])
+      .eq('locale', loc)
+      .eq('draft', false)
+      .order('published_at', { ascending: false })
+    if (error) return []
+    return ((data as Guide[]) || []).filter((g) => !REDIRECTED_SLUGS.has(g.slug))
+  }
+
+  const result = await tryLocale(locale)
+  if (result.length > 0) return result
+  if (locale !== 'zh') return tryLocale('zh')
+  return []
+}
+
+/**
  * 获取单语言文章总数（locale='zh'），用于首页统计展示。
  * EN/ZH 1:1 翻译，只取一种语言的数量即可。
  */

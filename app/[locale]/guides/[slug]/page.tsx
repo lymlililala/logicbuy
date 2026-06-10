@@ -85,6 +85,11 @@ export default async function GuidePage(props: {
 
   if (!guide) return notFound()
 
+  // 是否为「踩坑指南」专栏文章（带 pitfall-guide 标记 tag）
+  const isPitfall = (guide.tags || []).includes('pitfall-guide')
+  // 可见标签：隐藏专栏标记 tag（仅用于聚合与互链，不展示给用户）
+  const visibleTags = (guide.tags || []).filter((t) => t !== 'pitfall-guide')
+
   // 正文内联内链：用全量 slug 构建产品词→guide 映射，渲染时注入站内链接
   const allSlugs = await fetchAllSlugs(guide.locale)
   const internalLinks = buildInternalLinkEntries(allSlugs, slug)
@@ -190,10 +195,21 @@ export default async function GuidePage(props: {
           {/* ── Header ── */}
           <header className="pt-6 xl:pb-6">
             <div className="space-y-4 text-center">
+              {/* 踩坑专栏徽标 */}
+              {isPitfall && (
+                <div className="flex justify-center">
+                  <Link
+                    href={`/${locale}/pitfalls`}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-500/20 transition hover:bg-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300"
+                  >
+                    ⚠️ {locale === 'zh' ? '踩坑指南专栏' : 'Pitfall Guides'}
+                  </Link>
+                </div>
+              )}
               {/* Tags */}
-              {guide.tags && guide.tags.length > 0 && (
+              {visibleTags.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-2">
-                  {guide.tags.map((tag) => (
+                  {visibleTags.map((tag) => (
                     <Tag key={tag} text={tag} />
                   ))}
                 </div>

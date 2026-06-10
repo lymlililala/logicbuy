@@ -20,6 +20,7 @@ const MobileNav = ({ locale }: MobileNavProps) => {
   const navLinks = [
     { href: `/${locale}`, title: isZh ? '首页' : 'Home' },
     { href: `/${locale}/guides`, title: isZh ? '避坑指南' : 'Guides' },
+    { href: `/${locale}/pitfalls`, title: isZh ? '踩坑专栏' : 'Pitfalls' },
     { href: `/${locale}/tags`, title: isZh ? '分类' : 'Categories' },
   ]
 

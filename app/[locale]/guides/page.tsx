@@ -130,6 +130,7 @@ export default async function GuidesPage({
           {guides.map((guide) => {
             const { slug, title: gTitle, summary, tags, published_at, locale: gLocale } = guide
             const isFallback = gLocale !== locale
+            const visibleTags = (tags || []).filter((t) => t !== 'pitfall-guide')
 
             return (
               <li key={`${slug}-${gLocale}`} className="py-12">
@@ -160,9 +161,9 @@ export default async function GuidesPage({
                               {gTitle}
                             </Link>
                           </h2>
-                          {tags && tags.length > 0 && (
+                          {visibleTags.length > 0 && (
                             <div className="flex flex-wrap gap-2 pt-1">
-                              {tags.map((tag) => (
+                              {visibleTags.map((tag) => (
                                 <Tag key={tag} text={tag} />
                               ))}
                             </div>
