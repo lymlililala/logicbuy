@@ -6,6 +6,7 @@ import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
+import LocaleSuggestion from '@/components/LocaleSuggestion'
 import siteMetadata from '@/data/siteMetadata'
 import { routing } from '@/i18n/routing'
 import type { Metadata } from 'next'
@@ -76,6 +77,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+      <LocaleSuggestion currentLocale={locale as 'en' | 'zh'} />
       <SectionContainer>
         <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
           <Header locale={locale} />
