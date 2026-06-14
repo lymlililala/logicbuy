@@ -13,6 +13,13 @@ export default function Footer({ locale }: FooterProps) {
     { href: `/${locale}/tags`, label: isZh ? '分类' : 'Categories' },
   ]
 
+  const infoLinks = [
+    { href: `/${locale}/about`, label: isZh ? '关于我们' : 'About' },
+    { href: `/${locale}/contact`, label: isZh ? '联系我们' : 'Contact' },
+    { href: `/${locale}/privacy`, label: isZh ? '隐私政策' : 'Privacy' },
+    { href: `/${locale}/terms`, label: isZh ? '服务条款' : 'Terms' },
+  ]
+
   return (
     <footer className="mt-12 border-t border-gray-200/80 dark:border-gray-800">
       <div className="py-8">
@@ -34,6 +41,19 @@ export default function Footer({ locale }: FooterProps) {
         {/* 导航链接 */}
         <div className="mb-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs">
           {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-gray-400 transition hover:text-blue-600 dark:text-gray-600 dark:hover:text-blue-400"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* 信息/法务链接 */}
+        <div className="mb-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs">
+          {infoLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
