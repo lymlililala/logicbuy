@@ -20,7 +20,14 @@ function staticRoutes(): MetadataRoute.Sitemap {
     'guides', // 指南列表
     'pitfalls', // 踩坑指南专栏
     'tags', // 分类总览
+    'about', // 关于我们
+    'contact', // 联系我们
+    'privacy', // 隐私政策
+    'terms', // 服务条款
   ]
+
+  // 信息/法务页变动少、权重低
+  const LOW_FREQ = new Set(['about', 'contact', 'privacy', 'terms'])
 
   const entries: MetadataRoute.Sitemap = []
 
@@ -30,8 +37,8 @@ function staticRoutes(): MetadataRoute.Sitemap {
       entries.push({
         url,
         lastModified: NOW,
-        changeFrequency: path === '' ? 'daily' : 'weekly',
-        priority: path === '' ? 1.0 : path === 'guides' ? 0.9 : 0.7,
+        changeFrequency: path === '' ? 'daily' : LOW_FREQ.has(path) ? 'yearly' : 'weekly',
+        priority: path === '' ? 1.0 : path === 'guides' ? 0.9 : LOW_FREQ.has(path) ? 0.3 : 0.7,
         alternates: {
           languages: {
             en: path ? `${BASE}/en/${path}` : `${BASE}/en`,
