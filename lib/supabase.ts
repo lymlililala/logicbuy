@@ -241,6 +241,17 @@ export async function fetchTagCounts(locale: string): Promise<Record<string, num
   return counts
 }
 
+/** 轻量统计某标签下的 zh 非草稿文章数（用于标签页索引策略判定，与 sitemap 同口径）。 */
+export async function fetchTagGuideCountZh(tagSlug: string): Promise<number> {
+  const { count } = await supabase
+    .from('pitfallfree_guides')
+    .select('slug', { count: 'exact', head: true })
+    .contains('tags', [tagSlug])
+    .eq('locale', 'zh')
+    .eq('draft', false)
+  return count || 0
+}
+
 /** 轻量获取某语言全部非草稿、未合并的 slug（用于正文内联内链关键词表）。 */
 export async function fetchAllSlugs(locale: string): Promise<string[]> {
   const { data } = await supabase

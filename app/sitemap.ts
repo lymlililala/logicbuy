@@ -3,6 +3,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { CATEGORIES } from '@/data/categories'
 import { supabase } from '@/lib/supabase'
 import guideRedirects from '@/data/guide-redirects.json'
+import { MIN_TAG_GUIDES, TAG_BLOCKLIST, taxonomyTagSlugs } from '@/lib/tagIndex'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600 // 1 小时重新生成一次
@@ -159,26 +160,14 @@ function finalize(
   return entries
 }
 
-/** taxonomy 已覆盖的标签 slug（大类 + 子类），用于排除孤儿标签去重 */
-function taxonomyTagSlugs(): Set<string> {
-  const slugs = new Set<string>()
-  for (const cat of CATEGORIES) {
-    slugs.add(cat.slug)
-    for (const sub of cat.subcategories) slugs.add(sub.slug)
-  }
-  return slugs
-}
-
-/** 通用噪音标签：几乎挂在每篇文章上，对应页面等同于全站列表，不应收录 */
-const TAG_BLOCKLIST = new Set(['tags', 'buying-guide'])
-/** 孤儿标签收录门槛：少于该文章数的标签页内容过薄，不进 sitemap */
-const MIN_TAG_GUIDES = 3
+/** taxonomy 已覆盖的标签 slug（大类 + 子类），用于排除孤儿标签去重 —— 见 @/lib/tagIndex */
 
 /**
  * 实质性「孤儿标签」页：被文章真实使用、文章数 ≥ MIN_TAG_GUIDES、
  * 不在 taxonomy、且非通用噪音的标签。这些页面返回 200 且被文章内链引用，
  * 收录可让其被正常索引，而薄/重复/噪音标签则排除在外。
  * EN/ZH 1:1 翻译，按 zh 统计文章数即可。
+ * 索引门槛与标签页 robots 同源（@/lib/tagIndex），保证两者完全一致。
  */
 async function orphanTagRoutes(): Promise<MetadataRoute.Sitemap> {
   try {

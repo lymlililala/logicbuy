@@ -1,11 +1,12 @@
 import { genPageMetadata } from '@/app/seo'
-import { fetchGuidesByTag, fetchTagCounts } from '@/lib/supabase'
+import { fetchGuidesByTag, fetchTagCounts, fetchTagGuideCountZh } from '@/lib/supabase'
 import {
   CATEGORIES,
   getCategoryBySlug,
   getCategoryBySubSlug,
   getSubcategoryLabel,
 } from '@/data/categories'
+import { isIndexableTag, taxonomyTagSlugs } from '@/lib/tagIndex'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import { formatDate } from 'pliny/utils/formatDate'
@@ -55,10 +56,18 @@ export async function generateMetadata(props: {
 
   const title = parentLabel ? `${parentLabel} · ${label}` : label
 
+  // 索引策略：taxonomy 分类页恒可索引；非 taxonomy 的孤儿标签需 ≥ 门槛文章数，
+  // 否则标记 noindex,follow —— 与 sitemap 同源（lib/tagIndex），让薄标签页退出
+  // 「已抓取-未编入索引」，把抓取预算让给有实质内容的页面。
+  const isTax = taxonomyTagSlugs().has(decodedTag)
+  const guideCount = isTax ? 0 : await fetchTagGuideCountZh(decodedTag)
+  const indexable = isIndexableTag(decodedTag, guideCount)
+
   const canonical = `${siteMetadata.siteUrl}/${locale}/tags/${decodedTag}`
   return genPageMetadata({
     title,
     description: categoryIntro(label, isZh),
+    ...(indexable ? {} : { robots: { index: false, follow: true } }),
     alternates: {
       canonical,
       languages: {
