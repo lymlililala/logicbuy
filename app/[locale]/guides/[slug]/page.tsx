@@ -90,21 +90,34 @@ export default async function GuidePage(props: {
   // 可见标签：隐藏专栏标记 tag（仅用于聚合与互链，不展示给用户）
   const visibleTags = (guide.tags || []).filter((t) => t !== 'pitfall-guide')
 
+  // 主文章已就绪后，三个辅助查询彼此独立 —— 并行发起，缩短 ISR 渲染期函数执行时间，
+  // 降低 Supabase 多次串行往返叠加导致的函数超时 / 5xx 风险。
+  const [allSlugs, availableLocales, relatedGuides] = await Promise.all([
+    fetchAllSlugs(guide.locale),
+    checkGuideLocales(slug),
+    fetchRelatedGuides(slug, guide.tags || [], guide.locale),
+  ])
+
   // 正文内联内链：用全量 slug 构建产品词→guide 映射，渲染时注入站内链接
-  const allSlugs = await fetchAllSlugs(guide.locale)
   const internalLinks = buildInternalLinkEntries(allSlugs, slug)
 
-  // 渲染 Markdown → HTML（含正文内联内链）
-  const contentHtml = await markdownToHtml(guide.content, { internalLinks, locale })
+  // 渲染 Markdown → HTML（含正文内联内链）。渲染异常不应整页 500：
+  // 降级为未注入内链的安全 HTML（转义后包裹 <pre>），保证返回 200 而非服务器错误。
+  let contentHtml: string
+  try {
+    contentHtml = await markdownToHtml(guide.content, { internalLinks, locale })
+  } catch {
+    const escaped = guide.content
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+    contentHtml = `<pre>${escaped}</pre>`
+  }
 
   // 检查是否有其他语言版本（用于语言切换提示）
-  const availableLocales = await checkGuideLocales(slug)
   const isFallback = guide.locale !== locale
   const otherLocale = locale === 'zh' ? 'en' : 'zh'
   const hasOtherLocale = availableLocales.includes(otherLocale)
-
-  // 相关指南（同标签内链集群）—— 用展示语言，回退到文章实际语言
-  const relatedGuides = await fetchRelatedGuides(slug, guide.tags || [], guide.locale)
 
   // 面包屑：首页 › 分类 › 当前文章（分类由 tags 推断）
   const category = getCategoryForTags(guide.tags)
