@@ -107,10 +107,7 @@ export default async function GuidePage(props: {
   try {
     contentHtml = await markdownToHtml(guide.content, { internalLinks, locale })
   } catch {
-    const escaped = guide.content
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
+    const escaped = guide.content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     contentHtml = `<pre>${escaped}</pre>`
   }
 
