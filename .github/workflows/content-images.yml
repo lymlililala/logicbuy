@@ -1,0 +1,69 @@
+name: Backfill article images
+
+# 给 Supabase pitfallfree_guides 里「无正文图」的已发布文章自动补封面图。
+# 图来自 Pexels（主）/ Unsplash（回退），按 slug 派生的商品关键词搜，命中校验 +
+# 关键词降级（搜不到/不相关则跳过，绝不塞错图）。直接写库（内容存 Supabase，非文件，
+# 故无需开 PR）。幂等：已有图的文章跳过。
+#
+# 触发：手动（workflow_dispatch，可填本轮处理篇数）+ 每日定时（增量补，直到全站补完）。
+#
+# 前置：在仓库 Settings → Secrets and variables → Actions 配置：
+#   SUPABASE_URL          （必填）
+#   SUPABASE_SECRET_KEY   （必填，service role / secret key）
+#   PEXELS_API_KEY        （必填，配图主源）
+#   UNSPLASH_ACCESS_KEY   （可选，Pexels 未命中的回退源）
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '本轮处理多少个无图文章 slug（双语各算一篇）'
+        required: true
+        default: '25'
+  schedule:
+    # 每日 19:23 UTC 增量补图（非整点，错峰）
+    - cron: '23 19 * * *'
+
+# 同时只跑一个，避免并发写同一批文章
+concurrency:
+  group: backfill-images
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backfill-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node + Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Backfill images for articles without images
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          LIMIT: ${{ inputs.limit || '25' }}
+        run: |
+          if [ -z "$SUPABASE_SECRET_KEY" ]; then
+            echo "::error::未配置 SUPABASE_SECRET_KEY（Settings → Secrets → Actions）"
+            exit 1
+          fi
+          if [ -z "$PEXELS_API_KEY" ]; then
+            echo "::error::未配置 PEXELS_API_KEY（Settings → Secrets → Actions）"
+            exit 1
+          fi
+          node scripts/seo-backfill-images.mjs --limit "${LIMIT:-25}"

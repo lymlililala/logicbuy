@@ -16,6 +16,7 @@ import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import RelatedGuides from '@/components/guide/RelatedGuides'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { getCategoryForTags } from '@/data/categories'
+import { MARKER_TAGS } from '@/lib/tagIndex'
 import { formatDate } from 'pliny/utils/formatDate'
 
 // ISR：静态生成 + 每天最多重新生成一次，降低 Supabase egress
@@ -88,7 +89,7 @@ export default async function GuidePage(props: {
   // 是否为「踩坑指南」专栏文章（带 pitfall-guide 标记 tag）
   const isPitfall = (guide.tags || []).includes('pitfall-guide')
   // 可见标签：隐藏专栏标记 tag（仅用于聚合与互链，不展示给用户）
-  const visibleTags = (guide.tags || []).filter((t) => t !== 'pitfall-guide')
+  const visibleTags = (guide.tags || []).filter((t) => !MARKER_TAGS.has(t))
 
   // 主文章已就绪后，三个辅助查询彼此独立 —— 并行发起，缩短 ISR 渲染期函数执行时间，
   // 降低 Supabase 多次串行往返叠加导致的函数超时 / 5xx 风险。

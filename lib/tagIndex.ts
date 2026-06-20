@@ -10,7 +10,14 @@ import { CATEGORIES } from '@/data/categories'
 export const MIN_TAG_GUIDES = 3
 
 /** 通用噪音标签：几乎挂在每篇文章上，对应页面等同于全站列表，不应收录。 */
-export const TAG_BLOCKLIST = new Set(['tags', 'buying-guide'])
+export const TAG_BLOCKLIST = new Set(['tags', 'buying-guide', 'experience-guide'])
+
+/**
+ * 专栏标记 tag：仅用于专栏聚合与同标记互链，不作为面向用户的可见标签展示。
+ * - pitfall-guide：「踩坑指南」专栏（有独立 /pitfalls 路由）。
+ * - experience-guide：「商品体验」角度（暂复用 guides 渲染，无独立路由，故并入 TAG_BLOCKLIST 不收录其薄聚合页）。
+ */
+export const MARKER_TAGS = new Set(['pitfall-guide', 'experience-guide'])
 
 let _taxonomy: Set<string> | null = null
 /** taxonomy 覆盖的标签 slug（大类 + 子类）—— 结构性入口页，恒可索引。 */

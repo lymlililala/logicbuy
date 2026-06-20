@@ -89,7 +89,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
                           <dt className="sr-only">Role</dt>
                           <dd className="text-xs text-gray-500 dark:text-gray-400">
-                            {(author as any).occupation || 'Expert Team'}
+                            {author.occupation || 'Expert Team'}
                           </dd>
                         </dl>
                       </li>

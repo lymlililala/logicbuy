@@ -1,5 +1,6 @@
 import { genPageMetadata } from '@/app/seo'
 import { fetchGuideListPaged } from '@/lib/supabase'
+import { MARKER_TAGS } from '@/lib/tagIndex'
 import { getTranslations } from 'next-intl/server'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
@@ -130,7 +131,7 @@ export default async function GuidesPage({
           {guides.map((guide) => {
             const { slug, title: gTitle, summary, tags, published_at, locale: gLocale } = guide
             const isFallback = gLocale !== locale
-            const visibleTags = (tags || []).filter((t) => t !== 'pitfall-guide')
+            const visibleTags = (tags || []).filter((t) => !MARKER_TAGS.has(t))
 
             return (
               <li key={`${slug}-${gLocale}`} className="py-12">

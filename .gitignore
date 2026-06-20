@@ -30,6 +30,9 @@
 # misc
 .DS_Store
 
+# Claude Code 本地个人设置（含权限规则，勿提交）
+.claude/settings.local.json
+
 # debug
 *.log
 npm-debug.log*
@@ -48,3 +51,9 @@ yarn-error.log*
 # GSC 报告（本地分析用，勿提交）
 gsc_info/
 scripts/content-pipeline/existing.json
+
+# 公众号发现：凭证与中间产物（accounts.json 例外，需提交入库）
+scripts/wechat/.env
+scripts/wechat/cimidata/.env
+scripts/wechat/data/
+scripts/content-pipeline/image-cache.json
