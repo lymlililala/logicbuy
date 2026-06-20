@@ -1,0 +1,81 @@
+name: Nightly content pipeline
+
+# 公众号 → 双语选购指南 自动生成：抽样公众号采集 → DeepSeek 聚类/合成英文原创 + 本地化中文
+# → 质量闸门 + 自评分（过线 draft=false 直接发布，否则 draft=true 入库待人工放行）→ Pexels 配图
+# → upsert Supabase pitfallfree_guides。直接写库（内容存 Supabase，非文件，无需开 PR）。
+#
+# 触发：手动（workflow_dispatch，可填篇数/阈值）+ 每日定时（少量增量）。
+#
+# 前置：在仓库 Settings → Secrets and variables → Actions 配置：
+#   SUPABASE_URL          （必填）
+#   SUPABASE_SECRET_KEY   （必填）
+#   DEEPSEEK_API_KEY      （必填，合成/聚类/自评分）
+#   CIMIDATA_APP_ID       （必填，公众号采集）
+#   CIMIDATA_APP_SECRET   （必填）
+#   PEXELS_API_KEY        （必填，配图）
+#   UNSPLASH_ACCESS_KEY   （可选，配图回退）
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '本轮目标发布篇数（每篇双语）'
+        required: true
+        default: '4'
+      threshold:
+        description: '自评分过线阈值（0-100，未过线存草稿）'
+        required: true
+        default: '80'
+      accounts:
+        description: '本轮抽样公众号数'
+        required: true
+        default: '14'
+  schedule:
+    # 每日 18:41 UTC 少量增量生成（非整点错峰；与补图 Action 19:23 错开）
+    - cron: '41 18 * * *'
+
+concurrency:
+  group: nightly-content
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node + Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Generate articles from WeChat sources
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          CIMIDATA_APP_ID: ${{ secrets.CIMIDATA_APP_ID }}
+          CIMIDATA_APP_SECRET: ${{ secrets.CIMIDATA_APP_SECRET }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          LIMIT: ${{ inputs.limit || '4' }}
+          THRESHOLD: ${{ inputs.threshold || '80' }}
+          N_ACCOUNTS: ${{ inputs.accounts || '14' }}
+        run: |
+          for v in SUPABASE_SECRET_KEY DEEPSEEK_API_KEY CIMIDATA_APP_ID CIMIDATA_APP_SECRET PEXELS_API_KEY; do
+            if [ -z "${!v}" ]; then echo "::error::未配置 $v（Settings → Secrets → Actions）"; exit 1; fi
+          done
+          node scripts/wechat/nightly.mjs \
+            --limit "${LIMIT:-4}" \
+            --threshold "${THRESHOLD:-80}" \
+            --accounts "${N_ACCOUNTS:-14}"
