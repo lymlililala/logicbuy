@@ -2,9 +2,9 @@
 /**
  * nightly.mjs —— logicbuy 公众号 → 双语选购指南 自动生成流水线（单文件编排，适合 CI）。
  *
- * 流程（全程内存，无中间文件，适合 GitHub Action 无状态运行）：
- *   1) 采集：从 accounts.json 抽样若干公众号，取其近期发文（标题）作候选源
- *   2) 聚类：DeepSeek 把候选按「可写成常青选购/避坑/体验指南」的主题归并（标题级，省 token）
+ * 流程（源文落库 logicbuy_wx_sources，聚类读库内最近 N 天的池；适合 GitHub Action）：
+ *   1) 采集：抽样公众号取近期发文（标题级）→ 落库 logicbuy_wx_sources（已有正文不覆盖）
+ *   2) 聚类：DeepSeek 对「库内最近 N 天 + 未消费」的源文池归并主题（标题级，省 token）
  *   3) 查重：候选主题与 Supabase 已发布文章比对（slug/标题/LLM 近似），重复则丢
  *   4) 合成：逐主题拉源文正文 → DeepSeek 合成**英文原创** → 再本地化为**中文**（双语对齐、同 slug）
  *   5) 闸门：每语种过质量闸门 + DeepSeek 自评分；过线 draft=false，否则 draft=true（仍入库待人工放行）
@@ -33,6 +33,9 @@ import {
   upsertGuide,
   fetchSeenSns,
   markSourcesSeen,
+  upsertSources,
+  fetchSourcePool,
+  updateSourceBody,
 } from './lib/supabase.mjs'
 import { ImageFinder } from '../lib/pexels.mjs'
 
@@ -48,6 +51,7 @@ const DRY = process.argv.includes('--dry-run')
 const LIMIT = Number(arg('--limit', 3)) // 本轮目标发布篇数
 const N_ACCOUNTS = Number(arg('--accounts', 12)) // 本轮抽样公众号数
 const THRESHOLD = Number(arg('--threshold', 80)) // 自评分过线阈值
+const DAYS = Number(arg('--days', 14)) // 聚类源池：读库内最近 N 天的源文
 const DATE = new Date().toISOString().slice(0, 10)
 
 // logicbuy 站内常用大类 tag（提示模型 tags 向其靠拢，便于 RelatedGuides 自动互链）
@@ -97,7 +101,7 @@ const snOf = (url) => url.match(/[?&]sn=([0-9a-f]+)/i)?.[1] || url
 
 // ── 1) 采集候选源（标题级）─────────────────────────────────────────────────
 console.log(`抽样 ${picked.length}/${accounts.length} 个公众号，拉近期发文…`)
-const candidates = [] // { account, wxid, title, url, sn }
+const candidates = [] // { account, wxid, title, content_url, sn, published_at }
 const seenSn = new Set()
 for (const a of picked) {
   try {
@@ -110,38 +114,58 @@ for (const a of picked) {
       seenSn.add(sn)
       const title = stripTags(it.title)
       if (title.length < 6) continue
-      candidates.push({ account: a.nickname || a.name, wxid: a.wxid, title, url, sn })
+      candidates.push({
+        account: a.nickname || a.name,
+        wxid: a.wxid,
+        title,
+        content_url: url,
+        sn,
+        published_at: it.published_at || null,
+      })
     }
     console.log(`  ${a.nickname || a.name}: +${(items || []).length}`)
   } catch (e) {
     console.log(`  ✗ ${a.nickname || a.name}: ${e.message}`)
   }
 }
-console.log(`候选源 ${candidates.length} 篇，余额 ${cimi.balance}`)
+console.log(`本轮抓取 ${candidates.length} 篇，余额 ${cimi.balance}`)
 
-// 跨轮去重：过滤掉已消费过的源文 sn（logicbuy_wx_sources_seen）。表不存在则降级跳过。
+// 落库：把本轮抓取的源文（标题级）写入 logicbuy_wx_sources。表不存在则降级。
+const up = await upsertSources(candidates)
+const usePool = up.ok
+if (usePool) console.log(`源文落库：${up.n} 条（已有正文不覆盖）`)
+else
+  console.log(
+    `⚠️ logicbuy_wx_sources 表不存在，降级为「仅用本轮抓取聚类」（先建表：scripts/wechat/create-wx-sources.sql）：${up.error}`
+  )
+
+// 跨轮去重已消费源文（logicbuy_wx_sources_seen）。
 const seen = await fetchSeenSns()
-if (seen.ok) {
-  const before = candidates.length
-  for (let i = candidates.length - 1; i >= 0; i--) {
-    if (seen.set.has(candidates[i].sn)) candidates.splice(i, 1)
-  }
-  console.log(
-    `源文跨轮去重：库内已消费 ${seen.set.size} 篇，过滤掉 ${before - candidates.length}，剩 ${candidates.length}`
-  )
+if (!seen.ok) console.log(`⚠️ logicbuy_wx_sources_seen 表不存在，跳过源文跨轮去重：${seen.error}`)
+
+// 聚类源池：落库成功 → 读库内最近 DAYS 天的池（跨号跨天）；否则用本轮抓取。
+let pool
+if (usePool) {
+  const pr = await fetchSourcePool({ sinceDays: DAYS, limit: 300 })
+  pool = pr.ok && pr.rows.length ? pr.rows : candidates
+  console.log(`聚类源池：库内最近 ${DAYS} 天 ${pool.length} 篇`)
 } else {
-  console.log(
-    `⚠️ logicbuy_wx_sources_seen 表不存在，跳过源文跨轮去重（先建表：scripts/wechat/create-wx-sources-seen.mjs）`
-  )
+  pool = candidates
+}
+// 剔除已消费源文
+if (seen.ok) {
+  const before = pool.length
+  pool = pool.filter((p) => !seen.set.has(p.sn))
+  console.log(`剔除已消费 ${before - pool.length} 篇，剩 ${pool.length} 篇进入聚类`)
 }
 
-if (candidates.length < 4) {
-  console.error('候选源太少，结束')
+if (pool.length < 4) {
+  console.error('可用源文太少，结束')
   process.exit(0)
 }
 
 // ── 2) 聚类（标题级，选购语境）──────────────────────────────────────────────
-const list = candidates.map((c, i) => ({ id: i, account: c.account, title: c.title }))
+const list = pool.map((c, i) => ({ id: i, account: c.account, title: c.title }))
 const CLUSTER_SYS = `You are a senior editor at a bilingual (English + Chinese) product-buying-guide site (logicbuy).
 Below is a batch of article titles crawled from Chinese consumer/review/buying WeChat accounts.
 Cluster them into themes that can each become an EVERGREEN buying guide, "common mistakes" guide, or long-term ownership/experience guide for a product category.
@@ -280,15 +304,19 @@ let published = 0,
 const consumed = [] // 本轮实际拉取正文用于合成的源文 → 轮末登记进 logicbuy_wx_sources_seen
 for (const c of fresh) {
   console.log(`\n=== ${c.working_title} ===`)
-  // 拉正文
-  const members = c.source_ids.map((id) => candidates[id]).filter(Boolean)
+  // 拉正文（懒加载：池里已有 body_text 直接用，否则现拉并回填库）
+  const members = c.source_ids.map((id) => pool[id]).filter(Boolean)
   const material = []
   for (const m of members) {
     try {
-      const body = htmlToText(await cimi.articleBody(m.url))
+      let body = m.body_text
+      if (!body) {
+        body = htmlToText(await cimi.articleBody(m.content_url))
+        if (usePool && body) await updateSourceBody(m.sn, body) // 回填，下次复用
+      }
       if (body && body.length >= 200) material.push({ ...m, body })
     } catch (e) {
-      console.log(`  正文失败 ${m.title.slice(0, 16)}: ${e.message}`)
+      console.log(`  正文失败 ${(m.title || '').slice(0, 16)}: ${e.message}`)
     }
   }
   if (material.length < 2) {

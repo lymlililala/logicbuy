@@ -111,3 +111,46 @@ export async function markSourcesSeen(rows) {
   if (error) return { ok: false, n: 0, error: error.message }
   return { ok: true, n: rows.length }
 }
+
+const SOURCES_TABLE = 'logicbuy_wx_sources'
+
+/**
+ * 把抓到的源文（标题级）落库。**不写 body_text** → 已有正文不被覆盖（懒加载回填用）。
+ * 表不存在则返回 ok:false，调用方降级为「仅用本轮抓取聚类」。
+ */
+export async function upsertSources(rows) {
+  if (!rows || !rows.length) return { ok: true, n: 0 }
+  const sb = getSupabase()
+  const payload = rows.map((r) => ({
+    sn: r.sn,
+    account: r.account,
+    wxid: r.wxid,
+    title: r.title,
+    content_url: r.content_url,
+    published_at: r.published_at ?? null,
+  }))
+  const { error } = await sb.from(SOURCES_TABLE).upsert(payload, { onConflict: 'sn' })
+  if (error) return { ok: false, n: 0, error: error.message }
+  return { ok: true, n: payload.length }
+}
+
+/** 读「最近 sinceDays 天」入库的源文池（按入库时间倒序，限 limit 条）。 */
+export async function fetchSourcePool({ sinceDays = 14, limit = 300 } = {}) {
+  const sb = getSupabase()
+  const since = new Date(Date.now() - sinceDays * 86400 * 1000).toISOString()
+  const { data, error } = await sb
+    .from(SOURCES_TABLE)
+    .select('sn,account,wxid,title,content_url,body_text')
+    .gte('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) return { ok: false, rows: [], error: error.message }
+  return { ok: true, rows: data || [] }
+}
+
+/** 回填某源文的正文（懒加载缓存）。失败吞掉不阻断。 */
+export async function updateSourceBody(sn, body_text) {
+  const sb = getSupabase()
+  const { error } = await sb.from(SOURCES_TABLE).update({ body_text }).eq('sn', sn)
+  return error ? { ok: false, error: error.message } : { ok: true }
+}
