@@ -15,8 +15,8 @@
  *
  * 用法：
  *   node --env-file=.env.local scripts/wechat/nightly.mjs --dry-run
- *   node --env-file=.env.local scripts/wechat/nightly.mjs --limit 3
- *   node --env-file=.env.local scripts/wechat/nightly.mjs --limit 4 --accounts 12 --threshold 80
+ *   node --env-file=.env.local scripts/wechat/nightly.mjs --limit 2
+ *   node --env-file=.env.local scripts/wechat/nightly.mjs --limit 2 --accounts 14 --threshold 82
  *   CI：用 env 传 SUPABASE / PEXELS_API_KEY / DEEPSEEK_API_KEY / CIMIDATA 凭证
  */
 import { readFileSync } from 'node:fs'
@@ -48,9 +48,9 @@ function arg(name, def) {
   return v && !v.startsWith('--') ? v : true
 }
 const DRY = process.argv.includes('--dry-run')
-const LIMIT = Number(arg('--limit', 3)) // 本轮目标发布篇数
+const LIMIT = Number(arg('--limit', 2)) // 本轮目标发布篇数
 const N_ACCOUNTS = Number(arg('--accounts', 12)) // 本轮抽样公众号数
-const THRESHOLD = Number(arg('--threshold', 80)) // 自评分过线阈值
+const THRESHOLD = Number(arg('--threshold', 82)) // 自评分过线阈值
 const DAYS = Number(arg('--days', 14)) // 聚类源池：读库内最近 N 天的源文
 const DATE = new Date().toISOString().slice(0, 10)
 
