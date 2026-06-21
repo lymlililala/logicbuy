@@ -304,8 +304,11 @@ let published = 0,
 const consumed = [] // 本轮实际拉取正文用于合成的源文 → 轮末登记进 logicbuy_wx_sources_seen
 for (const c of fresh) {
   console.log(`\n=== ${c.working_title} ===`)
-  // 拉正文（懒加载：池里已有 body_text 直接用，否则现拉并回填库）
-  const members = c.source_ids.map((id) => pool[id]).filter(Boolean)
+  // 拉正文（懒加载：池里已有 body_text 直接用，否则现拉并回填库）。每簇最多取 6 篇源文，控成本。
+  const members = c.source_ids
+    .slice(0, 6)
+    .map((id) => pool[id])
+    .filter(Boolean)
   const material = []
   for (const m of members) {
     try {
