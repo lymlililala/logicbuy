@@ -119,7 +119,7 @@ for (const a of picked) {
 }
 console.log(`候选源 ${candidates.length} 篇，余额 ${cimi.balance}`)
 
-// 跨轮去重：过滤掉已消费过的源文 sn（wx_sources_seen）。表不存在则降级跳过。
+// 跨轮去重：过滤掉已消费过的源文 sn（logicbuy_wx_sources_seen）。表不存在则降级跳过。
 const seen = await fetchSeenSns()
 if (seen.ok) {
   const before = candidates.length
@@ -131,7 +131,7 @@ if (seen.ok) {
   )
 } else {
   console.log(
-    `⚠️ wx_sources_seen 表不存在，跳过源文跨轮去重（先建表：scripts/wechat/create-wx-sources-seen.mjs）`
+    `⚠️ logicbuy_wx_sources_seen 表不存在，跳过源文跨轮去重（先建表：scripts/wechat/create-wx-sources-seen.mjs）`
   )
 }
 
@@ -277,7 +277,7 @@ async function resolveImages(docs) {
 let published = 0,
   drafted = 0,
   failed = 0
-const consumed = [] // 本轮实际拉取正文用于合成的源文 → 轮末登记进 wx_sources_seen
+const consumed = [] // 本轮实际拉取正文用于合成的源文 → 轮末登记进 logicbuy_wx_sources_seen
 for (const c of fresh) {
   console.log(`\n=== ${c.working_title} ===`)
   // 拉正文
@@ -420,7 +420,7 @@ if (!DRY && consumed.length) {
   console.log(
     r.ok
       ? `源文登记：${r.n} 篇标记为已消费（下轮不再重复读取/合成）`
-      : `⚠️ 源文登记失败（不影响已发布内容；多半是 wx_sources_seen 表未建）：${r.error}`
+      : `⚠️ 源文登记失败（不影响已发布内容；多半是 logicbuy_wx_sources_seen 表未建）：${r.error}`
   )
 }
 

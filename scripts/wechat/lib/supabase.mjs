@@ -80,7 +80,7 @@ export async function upsertGuide(row) {
   if (error) throw new Error(error.message)
 }
 
-const SEEN_TABLE = 'wx_sources_seen'
+const SEEN_TABLE = 'logicbuy_wx_sources_seen'
 
 /**
  * 取已消费源文 sn 集合（跨轮去重）。表不存在则返回 { ok:false, set:空 }，调用方据此降级跳过。

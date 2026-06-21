@@ -38,7 +38,7 @@ async function run(host) {
   await client.query(SQL)
   const res = await client.query(
     `SELECT column_name, data_type FROM information_schema.columns
-     WHERE table_name = 'wx_sources_seen' ORDER BY ordinal_position`
+     WHERE table_name = 'logicbuy_wx_sources_seen' ORDER BY ordinal_position`
   )
   await client.end()
   return res.rows
