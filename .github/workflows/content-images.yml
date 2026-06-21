@@ -19,7 +19,7 @@ on:
       limit:
         description: '本轮处理多少个无图文章 slug（双语各算一篇）'
         required: true
-        default: '25'
+        default: '60'
   schedule:
     # 每日 19:23 UTC 增量补图（非整点，错峰）
     - cron: '23 19 * * *'
@@ -56,7 +56,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-          LIMIT: ${{ inputs.limit || '25' }}
+          LIMIT: ${{ inputs.limit || '60' }}
         run: |
           if [ -z "$SUPABASE_SECRET_KEY" ]; then
             echo "::error::未配置 SUPABASE_SECRET_KEY（Settings → Secrets → Actions）"
@@ -66,7 +66,7 @@ jobs:
             echo "::error::未配置 PEXELS_API_KEY（Settings → Secrets → Actions）"
             exit 1
           fi
-          node scripts/seo-backfill-images.mjs --limit "${LIMIT:-25}"
+          node scripts/seo-backfill-images.mjs --limit "${LIMIT:-60}"
 
       - name: Trigger Vercel redeploy (refresh sitemap & static)
         if: success()
