@@ -17,6 +17,7 @@
  *   # CI：用 env 传 SUPABASE_URL / SUPABASE_SECRET_KEY / PEXELS_API_KEY
  */
 import { createClient } from '@supabase/supabase-js'
+import { appendFileSync } from 'node:fs'
 import { ImageFinder } from './lib/pexels.mjs'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://tixgzezefjjsyuzgdhcd.supabase.co'
@@ -176,3 +177,12 @@ console.log(
   `\n完成：写入/计划 ${ok}，已有图跳过 ${skip}，未命中 ${miss}，失败 ${fail}。配图 stats`,
   finder.stats
 )
+
+// 给 GitHub Actions 输出本轮实际补图行数（供「仅在有变更时才触发部署」判断）
+if (process.env.GITHUB_OUTPUT) {
+  try {
+    appendFileSync(process.env.GITHUB_OUTPUT, `imaged=${DRY ? 0 : ok}\n`)
+  } catch {
+    /* 忽略 */
+  }
+}

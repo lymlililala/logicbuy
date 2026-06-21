@@ -21,8 +21,8 @@ on:
         required: true
         default: '60'
   schedule:
-    # 每日 19:23 UTC 增量补图（非整点，错峰）
-    - cron: '23 19 * * *'
+    # 每小时补图一次（:23 错峰）；每轮 60 篇，存量补完后自动空跑（仅扫库、不写）
+    - cron: '23 * * * *'
 
 # 同时只跑一个，避免并发写同一批文章
 concurrency:
@@ -51,6 +51,7 @@ jobs:
           yarn install --immutable
 
       - name: Backfill images for articles without images
+        id: backfill
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -68,13 +69,13 @@ jobs:
           fi
           node scripts/seo-backfill-images.mjs --limit "${LIMIT:-60}"
 
-      - name: Trigger Vercel redeploy (refresh sitemap & static)
-        if: success()
+      - name: Trigger Vercel redeploy (only if images were added)
+        if: success() && steps.backfill.outputs.imaged != '0' && steps.backfill.outputs.imaged != ''
         env:
           VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
         run: |
           if [ -n "$VERCEL_DEPLOY_HOOK_URL" ]; then
-            curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL" >/dev/null && echo "✅ 已触发 Vercel 重新部署"
+            curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL" >/dev/null && echo "✅ 已触发 Vercel 重新部署（本轮补图 ${{ steps.backfill.outputs.imaged }} 行）"
           else
             echo "::warning::未配置 VERCEL_DEPLOY_HOOK_URL，跳过重新部署"
           fi
