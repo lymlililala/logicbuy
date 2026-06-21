@@ -79,3 +79,35 @@ export async function upsertGuide(row) {
     .upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: 'slug,locale' })
   if (error) throw new Error(error.message)
 }
+
+const SEEN_TABLE = 'wx_sources_seen'
+
+/**
+ * 取已消费源文 sn 集合（跨轮去重）。表不存在则返回 { ok:false, set:空 }，调用方据此降级跳过。
+ */
+export async function fetchSeenSns() {
+  const sb = getSupabase()
+  const set = new Set()
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await sb
+      .from(SEEN_TABLE)
+      .select('sn')
+      .range(from, from + 999)
+    if (error) {
+      // 42P01 = 表不存在 / PostgREST 找不到表 → 降级
+      return { ok: false, set, error: error.message }
+    }
+    for (const r of data || []) set.add(r.sn)
+    if (!data || data.length < 1000) break
+  }
+  return { ok: true, set }
+}
+
+/** 登记已消费源文（onConflict sn）。表不存在等错误吞掉，不阻断主流程。 */
+export async function markSourcesSeen(rows) {
+  if (!rows || !rows.length) return { ok: true, n: 0 }
+  const sb = getSupabase()
+  const { error } = await sb.from(SEEN_TABLE).upsert(rows, { onConflict: 'sn' })
+  if (error) return { ok: false, n: 0, error: error.message }
+  return { ok: true, n: rows.length }
+}

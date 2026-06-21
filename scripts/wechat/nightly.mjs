@@ -28,7 +28,12 @@ import { htmlToText, truncate } from './lib/clean-html.mjs'
 import { uniqueSlug, slugify } from './lib/slug.mjs'
 import { checkQuality } from './lib/quality.mjs'
 import { isDuplicate } from './lib/dedup.mjs'
-import { fetchPublishedGuides, upsertGuide } from './lib/supabase.mjs'
+import {
+  fetchPublishedGuides,
+  upsertGuide,
+  fetchSeenSns,
+  markSourcesSeen,
+} from './lib/supabase.mjs'
 import { ImageFinder } from '../lib/pexels.mjs'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
@@ -113,6 +118,23 @@ for (const a of picked) {
   }
 }
 console.log(`候选源 ${candidates.length} 篇，余额 ${cimi.balance}`)
+
+// 跨轮去重：过滤掉已消费过的源文 sn（wx_sources_seen）。表不存在则降级跳过。
+const seen = await fetchSeenSns()
+if (seen.ok) {
+  const before = candidates.length
+  for (let i = candidates.length - 1; i >= 0; i--) {
+    if (seen.set.has(candidates[i].sn)) candidates.splice(i, 1)
+  }
+  console.log(
+    `源文跨轮去重：库内已消费 ${seen.set.size} 篇，过滤掉 ${before - candidates.length}，剩 ${candidates.length}`
+  )
+} else {
+  console.log(
+    `⚠️ wx_sources_seen 表不存在，跳过源文跨轮去重（先建表：scripts/wechat/create-wx-sources-seen.mjs）`
+  )
+}
+
 if (candidates.length < 4) {
   console.error('候选源太少，结束')
   process.exit(0)
@@ -255,6 +277,7 @@ async function resolveImages(docs) {
 let published = 0,
   drafted = 0,
   failed = 0
+const consumed = [] // 本轮实际拉取正文用于合成的源文 → 轮末登记进 wx_sources_seen
 for (const c of fresh) {
   console.log(`\n=== ${c.working_title} ===`)
   // 拉正文
@@ -295,6 +318,10 @@ for (const c of fresh) {
       Array.isArray(en.tags) && en.tags.length ? en.tags : c.suggested_tags || ['buying-guide']
     if (!en.tags.includes('buying-guide')) en.tags.push('buying-guide')
     en.faq = Array.isArray(en.faq) ? en.faq : []
+
+    // 标记这些源文为「已消费」（无论后续过没过闸门，都不再重复读取/合成）
+    for (const m of material)
+      consumed.push({ sn: m.sn, account: m.account, title: m.title, used_in_slug: en.slug })
 
     // 4) 中文本地化
     const zh = await ds.chatJSON(
@@ -385,6 +412,16 @@ for (const c of fresh) {
     console.log(`  ✗ 合成失败: ${e.message}`)
     failed++
   }
+}
+
+// 登记本轮已消费源文（跨轮去重）。dry-run 不写。
+if (!DRY && consumed.length) {
+  const r = await markSourcesSeen(consumed)
+  console.log(
+    r.ok
+      ? `源文登记：${r.n} 篇标记为已消费（下轮不再重复读取/合成）`
+      : `⚠️ 源文登记失败（不影响已发布内容；多半是 wx_sources_seen 表未建）：${r.error}`
+  )
 }
 
 console.log(`\n完成：发布 ${published}，草稿 ${drafted}，失败 ${failed}`)
