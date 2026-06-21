@@ -401,7 +401,9 @@ for (const c of fresh) {
 
     // 6) 配图（双语共图）
     const imgN = await resolveImages([en, zh])
-    console.log(`  配图 ${imgN} 张；来源: ${material.map((m) => m.account).join(' / ')}`)
+    console.log(
+      `  配图 ${imgN} 张（来自 Pexels）；合成源文来自: ${[...new Set(material.map((m) => m.account))].join(' / ')}`
+    )
 
     if (DRY) {
       console.log(`  [dry] slug=${en.slug} tags=${en.tags.join(',')}`)
