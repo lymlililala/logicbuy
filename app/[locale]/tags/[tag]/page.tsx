@@ -71,9 +71,9 @@ export async function generateMetadata(props: {
     alternates: {
       canonical,
       languages: {
-        en: `${siteMetadata.siteUrl}/en/tags/${decodedTag}`,
-        zh: `${siteMetadata.siteUrl}/zh/tags/${decodedTag}`,
-        'x-default': `${siteMetadata.siteUrl}/en/tags/${decodedTag}`,
+        en: `/en/tags/${decodedTag}`,
+        zh: `/zh/tags/${decodedTag}`,
+        'x-default': `/en/tags/${decodedTag}`,
       },
     },
   })

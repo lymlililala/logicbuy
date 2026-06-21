@@ -30,9 +30,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        en: `${siteMetadata.siteUrl}/en/contact`,
-        zh: `${siteMetadata.siteUrl}/zh/contact`,
-        'x-default': `${siteMetadata.siteUrl}/en/contact`,
+        en: `/en/contact`,
+        zh: `/zh/contact`,
+        'x-default': `/en/contact`,
       },
     },
     openGraph: {

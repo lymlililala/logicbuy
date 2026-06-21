@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
     default: siteMetadata.title,
-    template: `%s | ${siteMetadata.title}`,
+    // 用 headerTitle（LogicBuy）做后缀，避免文章标题被拼上长 slogan 造成中英混合。
+    template: `%s | ${siteMetadata.headerTitle}`,
   },
   description: siteMetadata.description,
   openGraph: {

@@ -77,7 +77,7 @@ export async function generateMetadata(props: {
   // 构造 hreflang alternates
   const alternateLocales: Record<string, string> = {}
   for (const loc of ['en', 'zh']) {
-    alternateLocales[localeToHreflang[loc]] = `${siteMetadata.siteUrl}/${loc}/blog/${slugStr}`
+    alternateLocales[localeToHreflang[loc]] = `/${loc}/blog/${slugStr}`
   }
 
   return {
@@ -87,7 +87,7 @@ export async function generateMetadata(props: {
       canonical: `${siteMetadata.siteUrl}/${locale}/blog/${slugStr}`,
       languages: {
         ...alternateLocales,
-        'x-default': `${siteMetadata.siteUrl}/en/blog/${slugStr}`,
+        'x-default': `/en/blog/${slugStr}`,
       },
     },
     openGraph: {

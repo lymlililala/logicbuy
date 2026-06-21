@@ -13,9 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     alternates: {
       canonical,
       languages: {
-        en: `${siteMetadata.siteUrl}/en/tags`,
-        zh: `${siteMetadata.siteUrl}/zh/tags`,
-        'x-default': `${siteMetadata.siteUrl}/en/tags`,
+        en: `/en/tags`,
+        zh: `/zh/tags`,
+        'x-default': `/en/tags`,
       },
     },
   })

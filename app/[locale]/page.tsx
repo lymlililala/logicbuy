@@ -18,30 +18,41 @@ export async function generateMetadata({
   const isZh = locale === 'zh'
   const canonical = `${siteMetadata.siteUrl}/${locale}`
 
+  // 首页标题：以独特关键词开头、品牌名 LogicBuy 收尾，避免中英混合。
+  // 用 title.absolute 跳过 layout 的 `%s | LogicBuy` 模板，防止品牌名重复。
+  const title = isZh
+    ? '参数选购指南：只看规格，不看品牌 | LogicBuy'
+    : 'Buying Guides by Specs, Not Brands | LogicBuy'
+  const description = isZh
+    ? '参数驱动、无品牌偏见的消费决策知识库。我们解读规格参数，帮你按需求挑对产品——聪明决策，零废话。'
+    : siteMetadata.description
+
   return {
-    title: siteMetadata.title,
-    description: siteMetadata.description,
+    title: { absolute: title },
+    description,
     alternates: {
       canonical,
+      // hreflang 用相对路径：Next 会用 metadataBase 正确解析为各语言绝对 URL。
+      // 不可用同域绝对 URL —— Next15 会用当前路由 pathname 覆盖其路径，导致全部塌缩。
       languages: {
-        en: `${siteMetadata.siteUrl}/en`,
-        zh: `${siteMetadata.siteUrl}/zh`,
-        'x-default': `${siteMetadata.siteUrl}/en`,
+        en: `/en`,
+        zh: `/zh`,
+        'x-default': `/en`,
       },
     },
     openGraph: {
-      title: siteMetadata.title,
-      description: siteMetadata.description,
+      title,
+      description,
       url: canonical,
       siteName: siteMetadata.title,
-      images: [{ url: SOCIAL_BANNER, width: 1200, height: 630, alt: siteMetadata.title }],
+      images: [{ url: SOCIAL_BANNER, width: 1200, height: 630, alt: title }],
       locale: isZh ? 'zh_CN' : 'en_US',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: siteMetadata.title,
-      description: siteMetadata.description,
+      title,
+      description,
       images: [SOCIAL_BANNER],
     },
   }

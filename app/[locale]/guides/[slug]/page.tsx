@@ -44,8 +44,8 @@ export async function generateMetadata(props: {
 
   const canonical = `${siteMetadata.siteUrl}/${locale}/guides/${slug}`
   const alternates: Record<string, string> = {
-    en: `${siteMetadata.siteUrl}/en/guides/${slug}`,
-    zh: `${siteMetadata.siteUrl}/zh/guides/${slug}`,
+    en: `/en/guides/${slug}`,
+    zh: `/zh/guides/${slug}`,
   }
 
   return {
@@ -55,7 +55,7 @@ export async function generateMetadata(props: {
       canonical,
       languages: {
         ...alternates,
-        'x-default': `${siteMetadata.siteUrl}/en/guides/${slug}`,
+        'x-default': `/en/guides/${slug}`,
       },
     },
     openGraph: {

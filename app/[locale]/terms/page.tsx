@@ -27,9 +27,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        en: `${siteMetadata.siteUrl}/en/terms`,
-        zh: `${siteMetadata.siteUrl}/zh/terms`,
-        'x-default': `${siteMetadata.siteUrl}/en/terms`,
+        en: `/en/terms`,
+        zh: `/zh/terms`,
+        'x-default': `/en/terms`,
       },
     },
     openGraph: {

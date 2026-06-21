@@ -21,9 +21,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     alternates: {
       canonical,
       languages: {
-        en: `${siteMetadata.siteUrl}/en/guides`,
-        zh: `${siteMetadata.siteUrl}/zh/guides`,
-        'x-default': `${siteMetadata.siteUrl}/en/guides`,
+        en: `/en/guides`,
+        zh: `/zh/guides`,
+        'x-default': `/en/guides`,
       },
     },
   })
