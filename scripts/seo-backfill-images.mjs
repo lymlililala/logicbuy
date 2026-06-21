@@ -77,6 +77,17 @@ function slugToKeyword(slug) {
   return toks.slice(0, 3).join(' ')
 }
 
+// slug 关键词为空（如 guide-zh180）时，用英文标题里的实义词兜底。
+function titleToKeyword(title) {
+  const toks = (title || '')
+    .toLowerCase()
+    .match(/[a-z]{3,}/g)
+    ?.filter(
+      (w) => !SUFFIX_STOP.has(w) && !['for', 'and', 'with', 'your', 'what', 'why'].includes(w)
+    )
+  return (toks || []).slice(0, 3).join(' ')
+}
+
 const hasImage = (c) => /!\[[^\]]*\]\(https?:\/\/[^)]*(pexels|unsplash)/.test(c || '')
 
 function insertCover(content, alt, url) {
@@ -126,8 +137,8 @@ for (const [slug, rs] of targets) {
   if (processed >= LIMIT) break
   processed++
 
-  const kw = slugToKeyword(slug)
   const enRow = rs.find((r) => r.locale === 'en') || rs[0]
+  const kw = slugToKeyword(slug) || titleToKeyword(enRow.title)
   const found = await finder.find(kw, enRow.title || kw)
   if (!found) {
     console.log(`· 未命中(跳过) ${slug}  kw="${kw}"`)
