@@ -79,3 +79,14 @@ jobs:
             --limit "${LIMIT:-2}" \
             --threshold "${THRESHOLD:-82}" \
             --accounts "${N_ACCOUNTS:-14}"
+
+      - name: Trigger Vercel redeploy (refresh sitemap & static)
+        if: success()
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$VERCEL_DEPLOY_HOOK_URL" ]; then
+            curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL" >/dev/null && echo "✅ 已触发 Vercel 重新部署（刷新 sitemap）"
+          else
+            echo "::warning::未配置 VERCEL_DEPLOY_HOOK_URL，跳过重新部署"
+          fi

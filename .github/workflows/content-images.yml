@@ -67,3 +67,14 @@ jobs:
             exit 1
           fi
           node scripts/seo-backfill-images.mjs --limit "${LIMIT:-25}"
+
+      - name: Trigger Vercel redeploy (refresh sitemap & static)
+        if: success()
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$VERCEL_DEPLOY_HOOK_URL" ]; then
+            curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL" >/dev/null && echo "✅ 已触发 Vercel 重新部署"
+          else
+            echo "::warning::未配置 VERCEL_DEPLOY_HOOK_URL，跳过重新部署"
+          fi
