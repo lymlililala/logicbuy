@@ -128,9 +128,15 @@ export async function markdownToHtml(
     .use(rehypeStringify)
     .process(preprocessed)
 
-  // 给正文 <img> 加 loading="lazy" + decoding="async"，改善移动端 LCP / 流量
-  // （正文图片基本都在首屏以下，懒加载收益明确、无副作用）
-  return result.toString().replace(/<img /g, '<img loading="lazy" decoding="async" ')
+  // 正文图片优化：首图（介绍段后的封面）多在首屏、常是 LCP 元素 —— 用 eager +
+  // fetchpriority=high 加速；其余图片懒加载省流量。统一加 decoding=async。
+  let imgIndex = 0
+  return result.toString().replace(/<img /g, () => {
+    imgIndex += 1
+    return imgIndex === 1
+      ? '<img fetchpriority="high" decoding="async" '
+      : '<img loading="lazy" decoding="async" '
+  })
 }
 
 /**
