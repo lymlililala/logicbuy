@@ -5,7 +5,12 @@ import Link from '@/components/Link'
 
 // 段级错误边界：页面渲染（如 Supabase 查询）意外抛错时，给用户友好的双语兜底页，
 // 而不是白屏。reset() 可原地重试渲染。
-export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Error({
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
   const pathname = usePathname()
   const isZh = pathname?.split('/')[1] === 'zh'
   const locale = isZh ? 'zh' : 'en'
