@@ -128,7 +128,9 @@ export async function markdownToHtml(
     .use(rehypeStringify)
     .process(preprocessed)
 
-  return result.toString()
+  // 给正文 <img> 加 loading="lazy" + decoding="async"，改善移动端 LCP / 流量
+  // （正文图片基本都在首屏以下，懒加载收益明确、无副作用）
+  return result.toString().replace(/<img /g, '<img loading="lazy" decoding="async" ')
 }
 
 /**

@@ -123,7 +123,16 @@ module.exports = () => {
           permanent: true,
         }))
       )
-      return [...guideMerges, ...blogMerges]
+      // 把 www 子域 301 到主域，消除重复主机（apex 为规范域）
+      const wwwRedirect = [
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.logicbuy.guide' }],
+          destination: 'https://logicbuy.guide/:path*',
+          permanent: true,
+        },
+      ]
+      return [...wwwRedirect, ...guideMerges, ...blogMerges]
     },
     webpack: (config, options) => {
       config.module.rules.push({

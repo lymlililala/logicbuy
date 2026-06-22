@@ -53,7 +53,7 @@ export default function Header({ locale }: HeaderProps) {
               LogicBuy
             </span>
             <span className="hidden text-[9px] font-medium tracking-wide text-gray-400 sm:block dark:text-gray-600">
-              {isZh ? 'BUY BY SPECS' : 'BUY BY SPECS'}
+              {isZh ? '靠参数选购' : 'BUY BY SPECS'}
             </span>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function Header({ locale }: HeaderProps) {
         <button
           className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 sm:hidden dark:text-gray-400 dark:hover:bg-gray-800"
           onClick={() => router.push(`/${locale}/guides`)}
-          aria-label="Search"
+          aria-label={isZh ? '搜索' : 'Search'}
         >
           <svg
             className="h-4 w-4"
@@ -140,7 +140,7 @@ export default function Header({ locale }: HeaderProps) {
         </button>
 
         <LanguageSwitcher currentLocale={locale} />
-        <ThemeSwitch />
+        <ThemeSwitch locale={locale} />
         <MobileNav locale={locale} />
       </div>
     </header>

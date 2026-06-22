@@ -54,7 +54,8 @@ const Monitor = () => (
 )
 const Blank = () => <svg className="h-6 w-6" />
 
-const ThemeSwitch = () => {
+const ThemeSwitch = ({ locale }: { locale?: string }) => {
+  const isZh = locale === 'zh'
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme, resolvedTheme } = useTheme()
 
@@ -65,7 +66,7 @@ const ThemeSwitch = () => {
     <div className="flex items-center">
       <Menu as="div" className="relative inline-block text-left">
         <div className="hover:text-primary-500 dark:hover:text-primary-400 flex items-center justify-center">
-          <MenuButton aria-label="Theme switcher">
+          <MenuButton aria-label={isZh ? '主题切换' : 'Theme switcher'}>
             {mounted ? resolvedTheme === 'dark' ? <Moon /> : <Sun /> : <Blank />}
           </MenuButton>
         </div>
@@ -90,7 +91,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Sun />
                         </div>
-                        Light
+                        {isZh ? '浅色' : 'Light'}
                       </button>
                     )}
                   </MenuItem>
@@ -106,7 +107,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Moon />
                         </div>
-                        Dark
+                        {isZh ? '深色' : 'Dark'}
                       </button>
                     )}
                   </MenuItem>
@@ -122,7 +123,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Monitor />
                         </div>
-                        System
+                        {isZh ? '跟随系统' : 'System'}
                       </button>
                     )}
                   </MenuItem>
