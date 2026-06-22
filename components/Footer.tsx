@@ -34,7 +34,7 @@ export default function Footer({ locale }: FooterProps) {
             </span>
           </Link>
           <p className="mt-1 text-xs text-gray-400 dark:text-gray-600">
-            {isZh ? 'BUY BY SPECS · NOT BY BRANDS' : 'BUY BY SPECS · NOT BY BRANDS'}
+            {isZh ? '靠参数选购 · 而非品牌' : 'BUY BY SPECS · NOT BY BRANDS'}
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export default function Footer({ locale }: FooterProps) {
             >
               LogicBuy
             </Link>{' '}
-            · All rights reserved.
+            {isZh ? '· 保留所有权利。' : '· All rights reserved.'}
           </p>
           <p className="max-w-sm text-center text-[10px] text-gray-300 dark:text-gray-700">
             {isZh
