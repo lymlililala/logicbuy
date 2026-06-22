@@ -1,14 +1,14 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "LogicBuy",
+  "short_name": "LogicBuy",
   "icons": [
     {
-      "src": "/android-chrome-96x96.png",
+      "src": "/static/favicons/android-chrome-96x96.png",
       "sizes": "96x96",
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#2563EB",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
